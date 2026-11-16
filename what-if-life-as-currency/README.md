@@ -20,7 +20,7 @@ Single offline HTML file: every scene, font and script is inside it.
 | B or . | black screen |
 
 Most clickers send Page Down / Page Up, so they work out of the box.
-On a phone or tablet: tap the right side for next, the left side for back. Hold the phone sideways.
+On a phone or tablet: swipe left (or tap the right side) for next, swipe right (or tap the left side) for back. Hold the phone sideways.
 Open `…html#3` to jump straight to slide 3 in its final state (for rehearsing).
 
 ## Exporting
