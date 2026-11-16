@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>What If — Life as Currency</title>
+<title>Life as Currency</title>
 <meta name="description" content="What if years of your life could be used as money? A cinematic slide deck for an English class.">
 <style id="font-css">
 @font-face{font-family:'Barlow Condensed';font-style:normal;font-weight:200;font-display:block;src:url({{FONT:barlow-condensed-latin-200-normal}}) format('woff2')}
@@ -27,17 +27,21 @@
   --f-head:'Barlow Condensed',sans-serif;
   --f-mono:'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;
   --m:80px;                 /* outer margin, same on every slide */
+  color-scheme:dark;        /* one deliberate dark, cinematic look */
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;background:#000;color:var(--paper);overflow:hidden}
-body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:geometricPrecision;user-select:none;-webkit-user-select:none}
+body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:geometricPrecision;user-select:none;-webkit-user-select:none;touch-action:manipulation;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}
 body.idle,body.idle *{cursor:none!important}
 .sr{position:fixed;left:0;top:0;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
 /* ============================================================
    STAGE — 1920×1080, scaled to fit
    ============================================================ */
-#stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;margin:-540px 0 0 -960px;overflow:hidden;background:var(--ink);contain:strict}
+#stage{position:fixed;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0;overflow:hidden;background:var(--ink);contain:strict}
+/* phones held upright: a small tip under the letterboxed film */
+#rotate{display:none;position:fixed;left:0;right:0;bottom:calc(28px + env(safe-area-inset-bottom, 0px));padding:0 16px;text-align:center;font:400 12px/1.5 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:rgba(237,238,239,.62);pointer-events:none}
+@media (orientation:portrait) and (pointer:coarse){#rotate{display:block}}
 
 /* each slide: scene (camera) + shade + text. Not a stacking context. */
 .slide{position:absolute;inset:0;display:none}
@@ -158,7 +162,7 @@ body.idle,body.idle *{cursor:none!important}
 @media print{html,body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
 body.print{overflow:visible;height:auto;background:var(--ink)}
 body.print #stage{position:relative;left:auto;top:auto;margin:0;transform:none!important;height:auto;overflow:visible;contain:none;background:none}
-body.print #fog,body.print #vignette,body.print #ui,body.print #grain,body.print #standby,body.print #black,body.print #live{display:none}
+body.print #fog,body.print #vignette,body.print #ui,body.print #grain,body.print #standby,body.print #black,body.print #live,body.print #rotate{display:none}
 body.print .slide{display:block!important;position:relative;width:1920px;height:1080px;overflow:hidden;break-after:page;page-break-after:always;background:var(--ink)}
 body.print .slide:last-of-type{break-after:auto;page-break-after:auto}
 body.print .scene{opacity:1!important}
@@ -263,11 +267,13 @@ body.print .slide::after{content:"";position:absolute;inset:0;z-index:4;pointer-
 <div id="black" aria-hidden="true"></div>
 </div>
 <div id="live" class="sr" aria-live="polite"></div>
+<p id="rotate">Turn your phone sideways for the full view · tap right: next · tap left: back</p>
 <noscript><p style="position:fixed;inset:0;display:grid;place-items:center;font:20px monospace;color:#eee">This presentation needs JavaScript.</p></noscript>
 
 <script>
 (() => {
 'use strict';
+document.documentElement.lang = 'en';
 
 /* ============================================================
    CONFIG
@@ -940,8 +946,11 @@ setInterval(() => {
    ============================================================ */
 function toggleFS() {
   const d = document, el = d.documentElement;
-  if (d.fullscreenElement || d.webkitFullscreenElement) (d.exitFullscreen || d.webkitExitFullscreen).call(d);
-  else (el.requestFullscreen || el.webkitRequestFullscreen).call(el);
+  const exit = d.exitFullscreen || d.webkitExitFullscreen, enter = el.requestFullscreen || el.webkitRequestFullscreen;
+  try {
+    const r = (d.fullscreenElement || d.webkitFullscreenElement) ? exit && exit.call(d) : enter && enter.call(el);
+    if (r && r.catch) r.catch(() => {});             // phones and some embedded views refuse full screen
+  } catch (e) {}
 }
 let blacked = false;
 function blackout() { blacked = !blacked; blackEl.animate([{ opacity: blacked ? 0 : 1 }, { opacity: blacked ? 1 : 0 }], { duration: 300, fill: 'forwards' }); }
@@ -961,20 +970,28 @@ function onKey(e) {
   else if (k === 'b' || k === 'B' || k === '.') blackout();
 }
 addEventListener('keydown', onKey);
+// mouse: click = next, right-click = back · touch: tap right two-thirds = next, left third = back
+let downAt = 0, lastTouch = 0;
+addEventListener('pointerdown', e => { downAt = performance.now(); if (e.pointerType !== 'mouse') lastTouch = downAt; });
 addEventListener('pointerup', e => {
-  if (e.button !== 0) return;
-  if (e.pointerType === 'touch' && e.clientX < innerWidth / 3) prev(); else { begin(); next(); }
+  if (e.button !== 0 || performance.now() - downAt > 600) return;   // ignore long presses
+  if (e.pointerType !== 'mouse' && e.clientX < innerWidth / 3) prev(); else { begin(); next(); }
 });
-addEventListener('contextmenu', e => { e.preventDefault(); prev(); });
+addEventListener('contextmenu', e => { e.preventDefault(); if (performance.now() - lastTouch > 1000) prev(); });
 let idleT = 0;
 addEventListener('pointermove', () => { document.body.classList.remove('idle'); clearTimeout(idleT); idleT = setTimeout(() => document.body.classList.add('idle'), 2200); });
 
+// letterbox the 1920×1080 film inside the visible area (minus any safe-area padding on <html>)
 function fit() {
   if (document.body.classList.contains('print')) { stage.style.transform = ''; return; }
-  const k = Math.min(innerWidth / W, innerHeight / H);
-  stage.style.transform = `scale(${k})`;
+  const cs = getComputedStyle(document.documentElement);
+  const pt = parseFloat(cs.paddingTop) || 0, pb = parseFloat(cs.paddingBottom) || 0;
+  const vw = innerWidth, vh = Math.max(1, innerHeight - pt - pb);
+  const k = Math.min(vw / W, vh / H);
+  stage.style.transform = `translate(${((vw - W * k) / 2).toFixed(2)}px,${(pt + (vh - H * k) / 2).toFixed(2)}px) scale(${k.toFixed(5)})`;
 }
 addEventListener('resize', fit);
+addEventListener('orientationchange', () => setTimeout(fit, 120));
 
 /* ============================================================
    ATMOSPHERE — fog and grain are generated here (no extra files)
@@ -1068,7 +1085,9 @@ async function boot() {
   requestAnimationFrame(frame);
 
   S.ready = true;
-  sbMsg.textContent = 'Press → or click to begin';
+  const touch = matchMedia('(pointer: coarse)').matches;
+  sbMsg.textContent = touch ? 'Tap to begin' : 'Press → or click to begin';
+  if (touch) $('#standby .sb-k').textContent = 'Tap right side: next · tap left side: back';
   window.__deck = { slides, S, C, next, prev, replay, go: (i) => go(i, i > S.i ? 1 : -1), enterPrint, finishBuild };
 
   const h = location.hash;

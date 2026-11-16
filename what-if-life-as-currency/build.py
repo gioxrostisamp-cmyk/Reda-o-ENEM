@@ -19,6 +19,7 @@ Focus points come from the template: data-scene="name" data-focus="fx fy".
 import base64
 import io
 import re
+import sys
 from pathlib import Path
 
 import numpy as np
@@ -142,6 +143,19 @@ def main():
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(html, encoding="utf-8")
     print(f"wrote {OUT.relative_to(ROOT)}  ({OUT.stat().st_size / 1e6:.1f} MB)")
+
+    # --web PATH: the same page without <!doctype>/<html>/<head>/<body>, for hosts
+    # that wrap the page in their own document (charset + viewport come from the host)
+    if "--web" in sys.argv:
+        web = Path(sys.argv[sys.argv.index("--web") + 1])
+        # strip only the page's own skeleton (the notes window's HTML string inside the script stays intact)
+        head, rest = html.split("<body>", 1)
+        rest, tail = rest.rsplit("</body>", 1)
+        head = re.sub(r"<!doctype html>\s*|<html[^>]*>\s*|</?head>\s*|<meta (charset|name=\"viewport\")[^>]*>\s*", "", head, flags=re.I)
+        frag = head + rest
+        web.parent.mkdir(parents=True, exist_ok=True)
+        web.write_text(frag, encoding="utf-8")
+        print(f"wrote {web}  ({web.stat().st_size / 1e6:.1f} MB)")
 
 
 if __name__ == "__main__":

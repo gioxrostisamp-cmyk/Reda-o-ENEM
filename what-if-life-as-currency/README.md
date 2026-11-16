@@ -20,6 +20,7 @@ Single offline HTML file: every scene, font and script is inside it.
 | B or . | black screen |
 
 Most clickers send Page Down / Page Up, so they work out of the box.
+On a phone or tablet: tap the right side for next, the left side for back. Hold the phone sideways.
 Open `…html#3` to jump straight to slide 3 in its final state (for rehearsing).
 
 ## Exporting
@@ -34,4 +35,6 @@ Open `…html#3` to jump straight to slide 3 in its final state (for rehearsing)
 - `assets/scenes/`: the six photos (`img1-time-bank` … `img6-ana`).
 - `assets/fonts/`: Barlow Condensed and IBM Plex Mono (SIL Open Font License).
 - `python3 build.py`: rebuilds `dist/`. Needs Python 3 with Pillow and NumPy.
+  `python3 build.py --web PATH` also writes a copy without the `<html>/<head>/<body>` skeleton,
+  for hosts that wrap the page in their own document (used for the private preview link).
 - `node tools/check-contrast.js 1 3`: measures text contrast against the photo behind each text (needs Playwright).
