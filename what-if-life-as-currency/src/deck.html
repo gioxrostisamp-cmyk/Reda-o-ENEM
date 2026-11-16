@@ -123,6 +123,71 @@ body.idle,body.idle *{cursor:none!important}
 .swap .to.on{opacity:1}
 
 /* ============================================================
+   COMPONENTS — slides 02 and 04–10
+   ============================================================ */
+/* typographic scenes: near-black with a faint light, so camera moves still read */
+.inkbg{position:absolute;inset:0;background:radial-gradient(ellipse 46% 50% at 50% 48%,#1B1D21 0%,#131417 48%,var(--ink) 100%)}
+.scene.plain .inkbg{background:var(--ink)}
+
+/* 02 — the quote appears like ink; the accent word turns orange last */
+.ci{position:relative}
+.hl.late .ci{transform-origin:50% 80%}
+.ci .ov{position:absolute;left:0;top:0;color:var(--amber);opacity:0;text-shadow:0 0 26px rgba(255,106,26,.5)}
+.ci .ov.on{opacity:1}
+
+/* 04 — departure-board price tags (label · operator · value) */
+.tag{position:absolute;right:var(--m);display:flex;align-items:center;gap:16px}
+.tag .flap{position:static;font-size:52px}
+.flap.acc{color:var(--amber)}
+.op{width:40px;height:52px;flex:none;color:var(--paper);opacity:0}
+.op.on{opacity:1}
+.op path{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round}
+
+/* 05 — annotations, like an architectural drawing */
+.ann{position:absolute;inset:0}
+.ann .halo{z-index:0}.ann .dot,.ann .lead,.ann .al{z-index:1}  /* every halo stays under every label */
+.ann .halo{position:absolute;left:calc(var(--ax) - 310px);top:calc(var(--ly) - 130px);width:1000px;height:300px;background:radial-gradient(closest-side,rgba(var(--ink-a),.9),rgba(var(--ink-a),.82) 45%,rgba(var(--ink-a),.4) 75%,rgba(var(--ink-a),0))}
+.ann .dot{position:absolute;left:calc(var(--ax) - 6px);top:calc(var(--ay) - 6px);width:12px;height:12px;border-radius:50%;background:var(--paper);box-shadow:0 0 0 7px rgba(237,238,239,.16)}
+.ann .lead{position:absolute;left:var(--ax);top:calc(var(--ly) + 60px);width:1px;height:calc(var(--ay) - var(--ly) - 72px);background:rgba(237,238,239,.85);transform-origin:50% 100%}
+.ann .al{position:absolute;left:calc(var(--ax) - 3px);top:var(--ly);font:400 46px/1 var(--f-head);letter-spacing:.06em;text-transform:uppercase;color:var(--paper);white-space:nowrap;text-shadow:0 0 24px rgba(var(--ink-a),.6)}
+
+/* 06 — two bar comparisons on one scale: 14 px per year, bars start at x 480 */
+.blk{position:absolute;inset:0}
+.blk-t{position:absolute;left:var(--m);font:400 40px/1 var(--f-head);letter-spacing:.06em;text-transform:uppercase;color:rgba(237,238,239,.8);white-space:nowrap}
+.row{position:absolute;left:0;width:1920px;height:56px}
+.row .rl{position:absolute;right:1480px;top:9px;font:400 40px/1 var(--f-head);letter-spacing:.04em;text-transform:uppercase;color:var(--paper);white-space:nowrap}
+.row .bar{position:absolute;left:480px;top:20px;height:16px;width:calc(var(--v) * 14px);background:var(--paper);transform-origin:0 50%}
+.row .rv{position:absolute;left:calc(480px + var(--v) * 14px + 22px);top:0;font:300 56px/1 var(--f-head);letter-spacing:.03em;text-transform:uppercase;color:var(--paper);white-space:nowrap;font-variant-numeric:tabular-nums}
+.gap{position:absolute;inset:0}
+.gap .seg{position:absolute;left:calc(480px + var(--a) * 14px);top:510px;height:16px;width:calc((var(--b) - var(--a)) * 14px);background:var(--amber);transform-origin:0 50%}
+.gap .tick{position:absolute;left:calc(480px + var(--a) * 14px);top:500px;width:1px;height:130px;background:repeating-linear-gradient(to bottom,rgba(237,238,239,.75) 0 6px,transparent 6px 11px);transform-origin:50% 0}
+.gap .gl{position:absolute;left:calc(480px + var(--a) * 14px + 16px);top:632px;font:400 44px/1 var(--f-head);letter-spacing:.06em;text-transform:uppercase;color:var(--amber);white-space:nowrap}
+
+/* 07 */
+.kw{position:absolute;left:var(--m);font:300 72px/1 var(--f-head);letter-spacing:.05em;text-transform:uppercase;color:var(--paper);white-space:nowrap;text-shadow:0 0 30px rgba(var(--ink-a),.45)}
+.kw.small{font:400 52px/1 var(--f-head);letter-spacing:.04em}
+
+/* 08 — the phrases dissolve into the fog, leaving a trace */
+.phrases{position:absolute;inset:0;transform-origin:0 30%}
+.phrases.on.ghost{opacity:.16;transform:translate3d(0,-10px,0) scale(1.03)}
+.phr{position:absolute;font:300 116px/1 var(--f-head);letter-spacing:.04em;text-transform:uppercase;color:var(--paper);white-space:nowrap}
+.final{position:absolute;left:var(--m);font:300 116px/1 var(--f-head);letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
+
+/* 09 — the receipt */
+.rcpt{position:absolute;right:var(--m);top:166px;width:660px;font:400 40px/1 var(--f-mono);color:var(--paper);text-transform:uppercase}
+.rcpt .rh{font:400 20px/1 var(--f-mono);letter-spacing:.16em;color:var(--mute);margin-bottom:24px;white-space:pre}
+.rcpt .rr{display:flex;justify-content:space-between;align-items:center;height:62px;white-space:nowrap}
+.rcpt .rs{height:1px;margin:12px 0;background:repeating-linear-gradient(90deg,rgba(237,238,239,.55) 0 10px,transparent 10px 18px)}
+.close2{position:absolute;left:var(--m);font:300 72px/1 var(--f-head);letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
+.q{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font:300 120px/1.04 var(--f-head);letter-spacing:.05em;text-transform:uppercase;color:var(--paper);text-align:center}
+.q .ln{display:block}
+
+/* 10 — sources: small text is allowed here */
+.srcs{position:absolute;left:var(--m);right:var(--m);top:160px;list-style:none;font:400 30px/1.3 var(--f-head);letter-spacing:.01em;color:rgba(237,238,239,.92)}
+.srcs li{position:relative;padding-left:72px;margin-bottom:20px}
+.srcs b{position:absolute;left:0;top:7px;font:400 20px/1 var(--f-mono);letter-spacing:.12em;color:var(--mute)}
+
+/* ============================================================
    MICRO-UI — identical positions on every slide
    ============================================================ */
 #ui{position:absolute;inset:0;z-index:7;pointer-events:none;will-change:transform}
@@ -187,12 +252,12 @@ body.print .slide::after{content:"";position:absolute;inset:0;z-index:4;pointer-
      01 — TITLE · IMG 1 · Time Bank facade
      ============================================================ -->
 <section class="slide" id="s1" aria-label="Slide 1"
-  data-scene="img1-time-bank" data-focus="0.586 0.77"
+  data-scene="img1-time-bank" data-focus="0.586 0.77" data-glow-box="0.46 0.6 0.74 1.06"
   data-code="FIG-01 / THE TIME BANK" data-num="01" data-title="Title — The Time Bank"
   data-bal="50Y 000D 00H 00M 00S" data-fog="0.20">
   <div class="scene"><div class="cam">
     <img class="sharp" alt="" src="{{IMG:img1-time-bank:sharp}}">
-    <img class="lit" alt="" src="{{IMG:img1-time-bank:lit}}">
+    <img class="lit patch" alt="" style="{{LITPOS:img1-time-bank}}" src="{{IMG:img1-time-bank:lit}}">
     <img class="blur" alt="" src="{{IMG:img1-time-bank:blur}}">
   </div></div>
   <div class="shade" style="background:
@@ -209,6 +274,33 @@ body.print .slide::after{content:"";position:absolute;inset:0;z-index:4;pointer-
   <aside class="notes">
     <p>Imagine a world where you pay for everything with your life.</p>
     <p>Not with money. With years.</p>
+  </aside>
+</section>
+
+<!-- ============================================================
+     02 — HOOK · IMG 2 · old letter, quill, candle
+     ============================================================ -->
+<section class="slide" id="s2" aria-label="Slide 2"
+  data-scene="img2-letter" data-focus="0.5 0.56" data-idle-drift="-70 -14"
+  data-code="FIG-02 / 1748" data-num="02" data-title="Hook — Franklin, 1748"
+  data-bal="48Y 197D 06H 41M 12S" data-fog="0.08">
+  <div class="scene"><div class="cam">
+    <img class="sharp" alt="" src="{{IMG:img2-letter:sharp}}">
+    <img class="blur" alt="" src="{{IMG:img2-letter:blur}}">
+  </div></div>
+  <div class="shade" style="background:
+    linear-gradient(to top,rgba(14,15,17,.92) 0%,rgba(14,15,17,.84) 22%,rgba(14,15,17,.62) 40%,rgba(14,15,17,0) 62%),
+    radial-gradient(ellipse 1150px 520px at 360px 820px,rgba(14,15,17,.55),rgba(14,15,17,0))"></div>
+  <div class="txt">
+    <h1 class="hl late" data-b style="--hs:132px;--hb:204px">
+      <span class="ln">Remember that</span>
+      <span class="ln">time is <span class="acc">money</span>.</span>
+    </h1>
+    <p class="mlabel cap" data-b style="left:80px;bottom:138px">— Benjamin Franklin, 1748</p>
+  </div>
+  <aside class="notes">
+    <p>Benjamin Franklin wrote this in 1748, almost 300 years ago.</p>
+    <p>Today I’ll show you a world where it’s not a metaphor.</p>
   </aside>
 </section>
 
@@ -243,6 +335,209 @@ body.print .slide::after{content:"";position:absolute;inset:0;z-index:4;pointer-
     <p>On August 15, 1971, President Nixon ended the dollar’s convertibility into gold, at 35 dollars per ounce.</p>
     <p>From then on, money was backed only by trust.</p>
     <p>In my world, that same year, scientists discover how to transfer lifespan, and governments back money with human life.</p>
+  </aside>
+</section>
+
+<!-- ============================================================
+     04 — THE RULES · IMG 4 · market stall
+     ============================================================ -->
+<section class="slide" id="s4" aria-label="Slide 4"
+  data-scene="img4-market" data-focus="0.5 0.62"
+  data-code="FIG-04 / EXCHANGE RATE" data-num="04" data-title="The rules"
+  data-bal="43Y 284D 17H 03M 55S" data-fog="0.12">
+  <div class="scene"><div class="cam">
+    <img class="sharp" alt="" src="{{IMG:img4-market:sharp}}">
+    <img class="blur" alt="" src="{{IMG:img4-market:blur}}">
+  </div></div>
+  <div class="shade" style="background:
+    linear-gradient(to top,rgba(14,15,17,.9) 0%,rgba(14,15,17,.72) 15%,rgba(14,15,17,0) 32%),
+    radial-gradient(ellipse 900px 330px at 1480px 280px,rgba(14,15,17,.86) 0%,rgba(14,15,17,.62) 50%,rgba(14,15,17,0) 100%)"></div>
+  <div class="txt">
+    <div class="tag t1" data-b style="top:196px">
+      <div class="flap" data-text="1 HOUR"></div>
+      <svg class="op" viewBox="0 0 40 52" aria-label="about"><path d="M4 21 C10 15 15 15 20 21 S30 27 36 21 M4 33 C10 27 15 27 20 33 S30 39 36 33"/></svg>
+      <div class="flap" data-len="10" data-text="$20"></div>
+    </div>
+    <div class="tag t2" data-b style="top:292px">
+      <div class="flap" data-text="COFFEE"></div>
+      <svg class="op" viewBox="0 0 40 52" aria-label="equals"><path d="M4 20 H36 M4 32 H36"/></svg>
+      <div class="flap" data-len="10" data-text="$5" data-to="15 MINUTES"></div>
+    </div>
+    <h1 class="hl" data-b style="--hs:104px;--hb:132px"><span class="ln">Everyone starts with 50 years</span></h1>
+  </div>
+  <aside class="notes">
+    <p>Everyone is born with 50 years. You earn time by working, and you can spend, lend or lose it.</p>
+    <p>The US Department of Transportation already values a “statistical life” at 14.2 million dollars in 2025.</p>
+    <p>Over an 80-year life, that’s about 20 dollars per hour. That’s my exchange rate.</p>
+  </aside>
+</section>
+
+<!-- ============================================================
+     05 — WHAT CHANGES · IMG 5 · city with countdown screens
+     ============================================================ -->
+<section class="slide" id="s5" aria-label="Slide 5"
+  data-scene="img5-city" data-focus="0.55 0.5"
+  data-code="FIG-05 / CONSEQUENCES" data-num="05" data-title="What changes"
+  data-bal="40Y 106D 02H 48M 30S" data-fog="0.18">
+  <div class="scene"><div class="cam">
+    <img class="sharp" alt="" src="{{IMG:img5-city:sharp}}">
+    <img class="blur" alt="" src="{{IMG:img5-city:blur}}">
+  </div></div>
+  <div class="shade" style="background:
+    radial-gradient(ellipse 1200px 380px at 420px 900px,rgba(14,15,17,.88) 0%,rgba(14,15,17,.7) 50%,rgba(14,15,17,0) 100%)"></div>
+  <div class="txt">
+    <div class="ann" data-b style="--ax:300px;--ay:724px;--ly:500px"><i class="halo"></i><i class="dot"></i><i class="lead"></i><span class="al">Banks lend life</span></div>
+    <div class="ann" data-b style="--ax:1410px;--ay:784px;--ly:552px"><i class="halo"></i><i class="dot"></i><i class="lead"></i><span class="al">Parents give years</span></div>
+    <div class="ann" data-b style="--ax:990px;--ay:742px;--ly:596px"><i class="halo"></i><i class="dot"></i><i class="lead"></i><span class="al">Thieves steal time</span></div>
+    <div class="ann" data-b style="--ax:1140px;--ay:414px;--ly:226px"><i class="halo"></i><i class="dot"></i><i class="lead"></i><span class="al">Prison takes time</span></div>
+    <h1 class="hl" data-b style="--hs:120px;--hb:136px"><span class="ln">Everything changes</span></h1>
+  </div>
+  <aside class="notes">
+    <p>Debt makes your life shorter.</p>
+    <p>Grandparents feel pressure to donate their years.</p>
+    <p>Crime and punishment are measured in time.</p>
+  </aside>
+</section>
+
+<!-- ============================================================
+     06 — THIS ALREADY HAPPENS · IMG 5 blurred and darkened to 30%
+     ============================================================ -->
+<section class="slide" id="s6" aria-label="Slide 6"
+  data-scene="img5-city" data-focus="0.55 0.5" data-trans="pull" data-rest-scale="0.94"
+  data-code="FIG-06 / REAL DATA" data-num="06" data-title="This already happens"
+  data-bal="36Y 312D 21H 15M 07S" data-fog="0.08">
+  <div class="scene"><div class="cam">
+    <img class="sharp" alt="" src="{{IMG:img5-city:dark}}">
+  </div></div>
+  <div class="txt">
+    <div class="blk" data-b>
+      <p class="blk-t" style="top:150px">USA · life expectancy gap · richest 1% vs poorest 1%</p>
+      <div class="row" style="top:212px;--v:14.6"><span class="rl">Men</span><i class="bar"></i><span class="rv" data-v="14.6" data-pre="+" data-dec="1" data-suf=" years">+14.6 years</span></div>
+      <div class="row" style="top:282px;--v:10.1"><span class="rl">Women</span><i class="bar"></i><span class="rv" data-v="10.1" data-pre="+" data-dec="1" data-suf=" years">+10.1 years</span></div>
+      <p class="mlabel src" style="left:480px;top:362px">Source: Chetty et al., JAMA 2016</p>
+    </div>
+    <div class="blk" data-b>
+      <p class="blk-t" style="top:428px">São Paulo · average age at death</p>
+      <div class="row" style="top:490px;--v:82"><span class="rl">Alto de Pinheiros</span><i class="bar"></i><span class="rv" data-v="82" data-dec="0" data-suf=" years">82 years</span></div>
+      <div class="row" style="top:560px;--v:62"><span class="rl">Cidade Tiradentes</span><i class="bar"></i><span class="rv" data-v="62" data-dec="0" data-suf=" years">62 years</span></div>
+      <p class="mlabel src" style="left:480px;top:706px">Source: Mapa da Desigualdade 2025, Rede Nossa São Paulo</p>
+    </div>
+    <div class="gap" data-b style="--a:62;--b:82"><i class="tick"></i><i class="seg"></i><span class="gl">20-year gap</span></div>
+    <h1 class="hl" data-b style="--hs:104px;--hb:132px"><span class="ln">Money already buys years</span></h1>
+  </div>
+  <aside class="notes">
+    <p>This is the real part. Rich people already live longer.</p>
+    <p>In my own city, two neighborhoods are 20 years apart.</p>
+  </aside>
+</section>
+
+<!-- ============================================================
+     07 — ANA’S CHOICE · IMG 6 · girl at the window
+     ============================================================ -->
+<section class="slide" id="s7" aria-label="Slide 7"
+  data-scene="img6-ana" data-focus="0.53 0.6" data-glow-box="0.46 0.52 0.58 0.7" data-move="3000"
+  data-code="FIG-07 / ANA, 16" data-num="07" data-title="Ana’s choice"
+  data-bal="33Y 041D 11H 52M 44S" data-fog="0">
+  <div class="scene"><div class="cam">
+    <img class="sharp" alt="" src="{{IMG:img6-ana:sharp}}">
+    <img class="lit patch" alt="" style="{{LITPOS:img6-ana}}" src="{{IMG:img6-ana:lit}}">
+    <img class="blur" alt="" src="{{IMG:img6-ana:blur}}">
+  </div></div>
+  <div class="shade" style="background:
+    radial-gradient(ellipse 1050px 760px at 300px 720px,rgba(14,15,17,.86) 0%,rgba(14,15,17,.66) 50%,rgba(14,15,17,0) 100%)"></div>
+  <div class="txt">
+    <p class="kw kw1" data-b style="top:446px">Ana, 16</p>
+    <p class="kw small kw2 words" data-b style="top:546px">Her mother: 8 months left</p>
+    <h1 class="hl" data-b style="--hs:128px;--hb:150px"><span class="ln">Would you sell</span><span class="ln">two years?</span></h1>
+  </div>
+  <aside class="notes">
+    <p>Ana works after school to earn days for her mother.</p>
+    <p>At the market, she sees a man buy 5 years from a stranger who needs to pay rent.</p>
+    <p>She has to decide: sell 2 years of her own life?</p>
+  </aside>
+</section>
+
+<!-- ============================================================
+     08 — WORDS BECOME REAL · typographic
+     ============================================================ -->
+<section class="slide" id="s8" aria-label="Slide 8"
+  data-focus="0.5 0.5" data-code="FIG-08 / LANGUAGE" data-num="08" data-title="Words become real"
+  data-bal="28Y 230D 04H 37M 19S" data-fog="0.24">
+  <div class="scene ink"><div class="cam"><i class="inkbg"></i></div></div>
+  <div class="txt">
+    <div class="phrases" data-b>
+      <p class="phr" style="left:80px;top:164px">Waste time</p>
+      <p class="phr" style="left:1000px;top:164px">Spend time</p>
+      <p class="phr" style="left:80px;top:316px">Buy time</p>
+      <p class="phr" style="left:1000px;top:316px">Borrowed time</p>
+    </div>
+    <p class="final acc words" data-b style="top:540px">But time never comes back.</p>
+    <h1 class="hl" data-b style="--hs:88px;--hb:140px"><span class="ln">Our language already thinks this way</span></h1>
+  </div>
+  <aside class="notes">
+    <p>Lakoff and Johnson, in “Metaphors We Live By” from 1980, showed that “time is money” is a metaphor that shapes how we think.</p>
+    <p>But there’s one difference: money can come back, time can’t.</p>
+    <p>In my world, even that difference disappears.</p>
+  </aside>
+</section>
+
+<!-- ============================================================
+     09 — CLOSING · typographic · the receipt
+     ============================================================ -->
+<section class="slide" id="s9" aria-label="Slide 9"
+  data-focus="0.5 0.5" data-code="FIG-09 / RECEIPT" data-num="09" data-title="Closing — the receipt"
+  data-bal="24Y 105D 15H 09M 58S" data-bal-end="00Y 000D 00H 00M 00S" data-fog="0.10">
+  <div class="scene ink"><div class="cam"><i class="inkbg"></i></div></div>
+  <div class="txt">
+    <div class="rcpt" data-b>
+      <p class="rh">Time Bank · receipt</p>
+      <p class="rr"><span>Balance at birth</span><span>50Y 000D</span></p>
+      <p class="rr"><span>Spent</span><span>−50Y 000D</span></p>
+      <p class="rs"></p>
+      <p class="rr"><span>Total</span><span>00Y 000D</span></p>
+    </div>
+    <h1 class="hl" data-b style="--hs:112px;--hb:292px"><span class="ln">We already pay for</span><span class="ln">time with our lives.</span></h1>
+    <p class="close2 acc words" data-b style="bottom:150px">This world just prints the receipt.</p>
+  </div>
+  <aside class="notes">
+    <p>We already trade hours of our lives for money every day.</p>
+  </aside>
+</section>
+
+<!-- the question: a hard cut to black, then it fades in alone -->
+<section class="slide" id="s9q" aria-label="Slide 9, question"
+  data-focus="0.5 0.5" data-trans="cut" data-ui="none" data-code="FIG-09 / RECEIPT" data-num="09" data-title="The question"
+  data-bal="00Y 000D 00H 00M 00S" data-fog="0">
+  <div class="scene ink plain"><div class="cam"><i class="inkbg"></i></div></div>
+  <div class="txt">
+    <h1 class="q" data-b><span class="ln">How would you spend</span><span class="ln">your next hour?</span></h1>
+  </div>
+  <aside class="notes">
+    <p>So, how would you spend your next hour?</p>
+  </aside>
+</section>
+
+<!-- ============================================================
+     10 — SOURCES · typographic
+     ============================================================ -->
+<section class="slide" id="s10" aria-label="Slide 10"
+  data-focus="0.5 0.5" data-code="FIG-10 / SOURCES" data-num="10" data-title="Sources"
+  data-bal="00Y 000D 00H 00M 00S" data-fog="0.06">
+  <div class="scene ink"><div class="cam"><i class="inkbg"></i></div></div>
+  <div class="txt">
+    <ol class="srcs" data-b>
+      <li><b>01</b>Franklin, B. (1748). Advice to a Young Tradesman.</li>
+      <li><b>02</b>Federal Reserve History. Nixon Ends Convertibility of U.S. Dollars to Gold (1971).</li>
+      <li><b>03</b>U.S. Department of Transportation. Value of a Statistical Life (2025).</li>
+      <li><b>04</b>Chetty, R. et al. (2016). The Association Between Income and Life Expectancy in the United States, 2001–2014. JAMA.</li>
+      <li><b>05</b>Rede Nossa São Paulo. Mapa da Desigualdade 2025.</li>
+      <li><b>06</b>Lakoff, G. &amp; Johnson, M. (1980). Metaphors We Live By.</li>
+      <li><b>07</b>Inspired by, but different from: Harlan Ellison, “‘Repent, Harlequin!’ Said the Ticktockman” (1965); In Time (2011).</li>
+    </ol>
+    <h1 class="hl" data-b style="--hs:96px;--hb:136px"><span class="ln">Every number has a source</span></h1>
+  </div>
+  <aside class="notes">
+    <p>Thank you for listening. Do you have any questions?</p>
   </aside>
 </section>
 
@@ -362,6 +657,7 @@ class TL {
     return a;
   }
   show(el) { el.classList.add('on'); if (this.rec && !this.rec.els.includes(el)) this.rec.els.push(el); }
+  addCls(el, cls) { el.classList.add(cls); if (this.rec) (this.rec.cls = this.rec.cls || []).push([el, cls]); }
   onFinish(fn) { this.finishers.add(fn); return () => this.finishers.delete(fn); }
   finish() {
     if (this.ff) return;
@@ -380,7 +676,8 @@ class TL {
    ============================================================ */
 function splitLetters(root) {
   root.setAttribute('aria-label', root.textContent.replace(/\s+/g, ' ').trim());
-  const lines = [];
+  const lines = [], late = root.classList.contains('late');
+  root._accents = [];
   $$('.ln', root).forEach(ln => {
     const chars = []; let k = 0, word = null;
     const frag = document.createDocumentFragment();
@@ -388,8 +685,9 @@ function splitLetters(root) {
       for (const ch of txt) {
         if (/\s/.test(ch)) { if (word) { frag.appendChild(document.createTextNode(' ')); word = null; k++; } continue; }
         if (!word) { word = document.createElement('span'); word.className = 'w'; frag.appendChild(word); }
-        const c = document.createElement('span'); c.className = 'ch' + (acc ? ' acc' : '');
+        const c = document.createElement('span'); c.className = 'ch' + (acc && !late ? ' acc' : '');
         const ci = document.createElement('span'); ci.className = 'ci'; ci.textContent = ch;
+        if (acc && late) { const ov = document.createElement('span'); ov.className = 'ov'; ov.textContent = ch; ci.appendChild(ov); root._accents.push(ov); }
         c.appendChild(ci); word.appendChild(c); chars.push({ el: c, inner: ci, k: k++ });
       }
     };
@@ -415,12 +713,12 @@ function setType(el, text) {
 }
 const FLAP_AZ = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', FLAP_09 = '0123456789';
 function buildFlap(el) {
-  const text = el.dataset.text;
-  el.setAttribute('aria-label', text);
+  const text = el.dataset.text, len = +el.dataset.len || text.length;
+  el.setAttribute('aria-label', el.dataset.to || text);
   el.textContent = '';
-  el._cells = Array.from(text).map(ch => {
+  el._cells = Array.from(text.padEnd(len, ' ')).map(ch => {
     const c = document.createElement('span');
-    c.className = 'fc' + (ch === ' ' ? ' sp' : '');
+    c.className = 'fc' + (ch === ' ' && !el.dataset.len ? ' sp' : '');
     c.setAttribute('aria-hidden', 'true');
     c.innerHTML = '<span class="h t"><i></i></span><span class="h b"><i></i></span><span class="h ft"><i></i></span><span class="h fb"><i></i></span>';
     el.appendChild(c);
@@ -434,7 +732,8 @@ function buildFlap(el) {
     c.el.getAnimations({ subtree: true }).forEach(a => a.cancel());
   };
   el._set = set;
-  el._reset = () => el._cells.forEach(c => set(c, ' '));
+  el._retarget = t => Array.from(t.padEnd(len, ' ')).forEach((ch, i) => { if (el._cells[i]) el._cells[i].target = ch; });
+  el._reset = () => { el.classList.remove('acc'); el._retarget(text); el._cells.forEach(c => set(c, ' ')); };
   el._final = () => el._cells.forEach(c => set(c, c.target));
   el._reset();
 }
@@ -494,7 +793,7 @@ async function flap(tl, el, o = {}) {
   if (tl.ff || REDUCED) { el._final(); if (!tl.ff) tl.anim(el, [{ opacity: 0 }, { opacity: 1 }], { duration: 400, fill: 'backwards' }); return; }
   const rnd = mulberry32(1971);
   const cells = el._cells;
-  const plan = cells.map((c, i) => c.target === ' ' ? 0 : (/[A-Z0-9]/.test(c.target) ? 3 + i + Math.floor(rnd() * 3) : 2 + i));
+  const plan = cells.map((c, i) => c.target === c.cur ? 0 : (/[A-Z0-9]/.test(c.target) ? 3 + i + Math.floor(rnd() * 3) : 2 + i));
   const off = tl.onFinish(() => el._final());
   const flip = (c, ch) => {
     const old = c.cur; c.cur = ch;
@@ -536,7 +835,7 @@ function litVisible(sl) { if (sl.glow) { sl.glow.style.visibility = 'visible'; s
 function syncLit(sl) {
   if (!sl.glow || sl.glow.getAnimations().length) return;
   sl.glow.style.visibility = sl.glowLevel > 0 ? 'visible' : 'hidden';
-  sl.sharp.style.visibility = sl.glowLevel >= 1 ? 'hidden' : 'visible';
+  sl.sharp.style.visibility = sl.glowLevel >= 1 && !sl.litPatch ? 'hidden' : 'visible';
 }
 // GOLD is struck through, an arrow draws, LIFE appears in orange.
 async function swap(tl, sl, el) {
@@ -565,6 +864,149 @@ async function swap(tl, sl, el) {
   await letters(tl, to, { stagger: 55, spread: 0.02, tighten: 900 });
 }
 
+// 02 — the quote appears like ink, letter by letter; the accent word turns orange last.
+async function ink(tl, h, o = {}) {
+  const { stagger = 52, dur = 760 } = o;
+  tl.show(h);
+  const acc = h._accents || [];
+  if (tl.ff) { acc.forEach(x => x.classList.add('on')); return; }
+  if (REDUCED) { tl.anim(h, [{ opacity: 0 }, { opacity: 1 }], { duration: 500, fill: 'backwards' }); acc.forEach(x => x.classList.add('on')); await tl.wait(400); return; }
+  let n = 0;
+  h._lines.forEach(line => line.forEach(c => tl.anim(c.inner,
+    [{ opacity: 0, transform: 'scale(1.14)' }, { opacity: 0.55, offset: 0.35 }, { opacity: 1, transform: 'none' }],
+    { duration: dur, delay: n++ * stagger, easing: 'cubic-bezier(0.2, 0.6, 0.2, 1)', fill: 'backwards' })));
+  await tl.wait((n - 1) * stagger + dur + 260);
+  acc.forEach((x, i) => { x.classList.add('on'); tl.anim(x, [{ opacity: 0 }, { opacity: 1 }], { duration: 1000, delay: i * 70, easing: 'ease-out', fill: 'backwards' }); });
+  await tl.wait(acc.length * 70 + 700);
+}
+// Generic: fade and rise.
+async function fadeUp(tl, el, o = {}) {
+  const { dur = 700, rise = 12, delay = 0 } = o;
+  tl.show(el);
+  if (tl.ff) return;
+  tl.anim(el, REDUCED || !rise ? [{ opacity: 0 }, { opacity: 1 }] : [{ opacity: 0, transform: `translate3d(0,${rise}px,0)` }, { opacity: 1, transform: 'none' }],
+    { duration: dur, delay, easing: E_OUT, fill: 'backwards' });
+  await tl.wait(delay + dur * 0.6);
+}
+// 04 — a price tag on the departure board; `convert` flips dollars to minutes, landing in orange.
+async function tag(tl, row, convert) {
+  tl.show(row);
+  const [lab, val] = $$('.flap', row), op = $('.op', row);
+  op.classList.add('on');
+  if (tl.ff) { lab._final(); if (convert) { val._retarget(val.dataset.to); val.classList.add('acc'); } val._final(); return; }
+  tl.anim(op, [{ opacity: 0 }, { opacity: 1 }], { duration: 400, delay: 250, fill: 'backwards' });
+  await Promise.all([flap(tl, lab, { step: 70 }), flap(tl, val, { step: 70 })]);
+  if (!convert || tl.ff) { if (convert) { val._retarget(val.dataset.to); val.classList.add('acc'); val._final(); } return; }
+  await tl.wait(REDUCED ? 300 : 1000);
+  val._retarget(val.dataset.to); val.classList.add('acc');
+  await flap(tl, val, { step: 70 });
+}
+// 05 — annotation: anchor dot, leader line grows up, then the label.
+async function annot(tl, a) {
+  tl.show(a);
+  if (tl.ff) return;
+  if (REDUCED) { tl.anim(a, [{ opacity: 0 }, { opacity: 1 }], { duration: 450, fill: 'backwards' }); await tl.wait(300); return; }
+  tl.anim($('.halo', a), [{ opacity: 0 }, { opacity: 1 }], { duration: 800, fill: 'backwards' });
+  tl.anim($('.dot', a), [{ opacity: 0, transform: 'scale(.2)' }, { opacity: 1, transform: 'none' }], { duration: 420, easing: E_OUT, fill: 'backwards' });
+  tl.anim($('.lead', a), [{ transform: 'scaleY(0)' }, { transform: 'none' }], { duration: 620, delay: 200, easing: E_IO, fill: 'backwards' });
+  tl.anim($('.al', a), [{ opacity: 0, transform: 'translate3d(0,12px,0)' }, { opacity: 1, transform: 'none' }], { duration: 600, delay: 720, easing: E_OUT, fill: 'backwards' });
+  await tl.wait(1150);
+}
+// 06 — bars grow from zero while the numbers count up (same easing, so the number rides the bar tip).
+function fmtVal(rv, v) { return `${rv.dataset.pre || ''}${v.toFixed(+rv.dataset.dec || 0)}${rv.dataset.suf || ''}`; }
+async function bars(tl, blk) {
+  tl.show(blk);
+  const rows = $$('.row', blk).map(r => ({ bar: $('.bar', r), rv: $('.rv', r), v: +$('.rv', r).dataset.v }));
+  const done = () => rows.forEach(r => { r.rv.textContent = fmtVal(r.rv, r.v); });
+  if (tl.ff) { done(); return; }
+  if (REDUCED) { tl.anim(blk, [{ opacity: 0 }, { opacity: 1 }], { duration: 450, fill: 'backwards' }); done(); await tl.wait(300); return; }
+  tl.anim($('.blk-t', blk), [{ opacity: 0, transform: 'translate3d(0,12px,0)' }, { opacity: 1, transform: 'none' }], { duration: 600, easing: E_OUT, fill: 'backwards' });
+  const src = $('.src', blk); if (src) src._chars.forEach(c => { c.className = 'tc hid'; });
+  const DUR = 1300, t0 = performance.now() + 350;
+  rows.forEach((r, i) => {
+    const delay = 350 + i * 220, w = r.v * 14;
+    tl.anim(r.bar, [{ transform: 'scaleX(0)' }, { transform: 'none' }], { duration: DUR, delay, easing: E_IO, fill: 'backwards' });
+    tl.anim(r.rv, [{ transform: `translate3d(${-w}px,0,0)`, opacity: 0 }, { opacity: 1, offset: 0.12 }, { transform: 'none', opacity: 1 }], { duration: DUR, delay, easing: E_IO, fill: 'backwards' });
+    r.rv.textContent = fmtVal(r.rv, 0);
+    const start = t0 + i * 220;
+    const tick = now => { if (tl.ff) return; const q = clamp((now - start) / DUR); r.rv.textContent = fmtVal(r.rv, r.v * E_CAM(q)); if (q < 1) requestAnimationFrame(tick); };
+    requestAnimationFrame(tick);
+  });
+  tl.onFinish(done);
+  await tl.wait(350 + (rows.length - 1) * 220 + DUR);
+  done();
+  if (src) await type(tl, src);
+}
+// 06 — the 20-year gap, in orange, last.
+async function gapIn(tl, g) {
+  tl.show(g);
+  if (tl.ff) return;
+  if (REDUCED) { tl.anim(g, [{ opacity: 0 }, { opacity: 1 }], { duration: 450, fill: 'backwards' }); await tl.wait(300); return; }
+  tl.anim($('.tick', g), [{ transform: 'scaleY(0)' }, { transform: 'none' }], { duration: 500, easing: E_IO, fill: 'backwards' });
+  tl.anim($('.seg', g), [{ transform: 'scaleX(0)' }, { transform: 'none' }], { duration: 1000, delay: 300, easing: E_IO, fill: 'backwards' });
+  tl.anim($('.gl', g), [{ opacity: 0, transform: 'translate3d(0,12px,0)' }, { opacity: 1, transform: 'none' }], { duration: 700, delay: 900, easing: E_OUT, fill: 'backwards' });
+  await tl.wait(1400);
+}
+// 07 — the wrist countdown pulses like a heartbeat (lub-dub), forever, very softly.
+function pulse(tl, sl) {
+  if (!sl.glow) return;
+  if (sl.ambient) { sl.ambient.cancel(); sl.ambient = null; }
+  litVisible(sl);
+  sl.glowLevel = 0.5;
+  if (REDUCED || document.body.classList.contains('print')) { sl.glow.style.opacity = 0.8; return; }
+  sl.glow.style.opacity = 0.3;
+  sl.ambient = sl.glow.animate([
+    { opacity: 0.3, offset: 0 }, { opacity: 1, offset: 0.1 }, { opacity: 0.45, offset: 0.22 },
+    { opacity: 0.85, offset: 0.32 }, { opacity: 0.3, offset: 0.62 }, { opacity: 0.3, offset: 1 },
+  ], { duration: 1500, iterations: Infinity, easing: 'ease-in-out' });
+}
+// 08 — the phrases drop in one by one.
+async function drop(tl, box) {
+  tl.show(box);
+  if (tl.ff) return;
+  const ps = $$('.phr', box);
+  ps.forEach((ph, i) => tl.anim(ph, REDUCED ? [{ opacity: 0 }, { opacity: 1 }] : [{ opacity: 0, transform: 'translate3d(0,-40px,0)' }, { opacity: 1, transform: 'none' }],
+    { duration: 720, delay: i * 520, easing: E_OUT, fill: 'backwards' }));
+  await tl.wait((ps.length - 1) * 520 + 600);
+}
+// 08 — …and dissolve into the fog, leaving a faint trace.
+function dissolve(tl, box) {
+  tl.addCls(box, 'ghost');
+  if (tl.ff || REDUCED) return;
+  tl.anim(box, [{ opacity: 1, transform: 'none' }, { opacity: 0.16, transform: 'translate3d(0,-10px,0) scale(1.03)' }], { duration: 2000, easing: 'cubic-bezier(0.4, 0, 0.2, 1)' });
+  const f = +fogEl.style.opacity || 0;
+  fogEl.animate([{ opacity: f }, { opacity: f + 0.22 }, { opacity: f }], { duration: 2800, easing: 'ease-in-out' });
+}
+// LIFE BALANCE races to a value (used by the receipt).
+function counterTo(tl, target, dur) {
+  if (tl.rec && tl.rec.bal === undefined) tl.rec.bal = counter.value;
+  counter.race = null;
+  if (tl.ff || REDUCED) { counter.set(target); counter.resume(); return; }
+  counter.ticking = false;
+  counter.race = { from: counter.value, to: target, t0: performance.now(), dur };
+  tl.onFinish(() => { if (counter.race) { counter.race = null; counter.set(target); counter.resume(); } });
+}
+// 09 — the receipt prints line by line while LIFE BALANCE races to zero.
+async function receipt(tl, r) {
+  tl.show(r);
+  const rows = Array.from(r.children);
+  if (tl.ff) { counterTo(tl, 0, 0); return; }
+  const at = [0, 450, 850, 3400, 3650];
+  rows.forEach((row, i) => { if (i) tl.anim(row, [{ opacity: 0, transform: 'translate3d(0,-14px,0)' }, { opacity: 1, transform: 'none' }], { duration: 320, delay: at[i], easing: E_OUT, fill: 'backwards' }); });
+  type(tl, rows[0]);
+  await tl.wait(950);
+  counterTo(tl, 0, 2400);
+  await tl.wait(3000);
+}
+// 10 — the source list.
+async function listIn(tl, ol) {
+  tl.show(ol);
+  if (tl.ff) return;
+  const items = $$('li', ol);
+  items.forEach((li, i) => tl.anim(li, [{ opacity: 0, transform: 'translate3d(0,10px,0)' }, { opacity: 1, transform: 'none' }], { duration: 600, delay: i * 90, easing: E_OUT, fill: 'backwards' }));
+  await tl.wait(items.length * 90 + 400);
+}
+
 /* ============================================================
    CHOREOGRAPHY — beat 0 plays on arrival, then one beat per click
    ============================================================ */
@@ -586,6 +1028,48 @@ const CHOREO = {
     },
     async (tl, sl) => { await swap(tl, sl, $('.swap', sl.el)); },
   ],
+  s2: [
+    async (tl, sl) => { await ink(tl, $('.hl', sl.el)); await tl.wait(120); await type(tl, $('.cap', sl.el)); },
+  ],
+  s4: [
+    async (tl, sl) => { await letters(tl, $('.hl', sl.el)); },
+    async (tl, sl) => { await tag(tl, $('.tag.t1', sl.el)); },
+    async (tl, sl) => { await tag(tl, $('.tag.t2', sl.el), true); },
+  ],
+  s5: [
+    async (tl, sl) => { await letters(tl, $('.hl', sl.el)); },
+    async (tl, sl) => { await annot(tl, $$('.ann', sl.el)[0]); },
+    async (tl, sl) => { await annot(tl, $$('.ann', sl.el)[1]); },
+    async (tl, sl) => { await annot(tl, $$('.ann', sl.el)[2]); },
+    async (tl, sl) => { await annot(tl, $$('.ann', sl.el)[3]); },
+  ],
+  s6: [
+    async (tl, sl) => { await letters(tl, $('.hl', sl.el)); },
+    async (tl, sl) => { await bars(tl, $$('.blk', sl.el)[0]); },
+    async (tl, sl) => { await bars(tl, $$('.blk', sl.el)[1]); },
+    async (tl, sl) => { await gapIn(tl, $('.gap', sl.el)); },
+  ],
+  s7: [
+    async (tl, sl) => { pulse(tl, sl); await fadeUp(tl, $('.kw1', sl.el), { dur: 1000, rise: 0 }); },
+    async (tl, sl) => { await words(tl, $('.kw2', sl.el)); },
+    async (tl, sl) => { await tl.wait(REDUCED ? 300 : 1400); await letters(tl, $('.hl', sl.el), { stagger: 34, dur: 700 }); },
+  ],
+  s8: [
+    async (tl, sl) => { await letters(tl, $('.hl', sl.el)); },
+    async (tl, sl) => { await drop(tl, $('.phrases', sl.el)); },
+    async (tl, sl) => { dissolve(tl, $('.phrases', sl.el)); await tl.wait(REDUCED ? 0 : 500); await words(tl, $('.final', sl.el), { stagger: 90, dur: 900 }); },
+  ],
+  s9: [
+    async (tl, sl) => { await letters(tl, $('.hl', sl.el)); },
+    async (tl, sl) => { await receipt(tl, $('.rcpt', sl.el)); },
+    async (tl, sl) => { await words(tl, $('.close2', sl.el)); },
+  ],
+  s9q: [
+    async (tl, sl) => { await fadeUp(tl, $('.q', sl.el), { dur: 1600, rise: 0 }); },
+  ],
+  s10: [
+    async (tl, sl) => { await letters(tl, $('.hl', sl.el)); await listIn(tl, $('.srcs', sl.el)); },
+  ],
 };
 
 /* ============================================================
@@ -604,7 +1088,10 @@ const slides = $$('.slide').map((el, i) => {
     shade: $('.shade', el), txt: $('.txt', el),
     code: el.dataset.code || '', num: el.dataset.num || pad(i + 1, 2), title: el.dataset.title || '',
     bal: parseBal(el.dataset.bal), fog: +(el.dataset.fog || 0.14), moveDur: +(el.dataset.move || MOVE_MS),
-    glowBase: +(el.dataset.glowBase || 0), glowLevel: 0,
+    glowBase: +(el.dataset.glowBase || 0), glowLevel: 0, ambient: null,
+    trans: el.dataset.trans || '', noUI: el.dataset.ui === 'none', restScale: +(el.dataset.restScale || 1),
+    idle: el.dataset.idleDrift ? el.dataset.idleDrift.split(' ').map(Number) : null,
+    litPatch: !!$('.cam .lit.patch', el), balEnd: el.dataset.balEnd ? parseBal(el.dataset.balEnd) : null,
     fx: fx * W, fy: fy * H, beat: 0, exitBeat: 0, rec: [],
     beats: CHOREO[el.id] || [async () => {}],
     notes: $$('.notes p', el).map(p => p.textContent.trim()),
@@ -628,7 +1115,8 @@ function restPose(sl, now) {
   const r = sl.rest;
   if (REDUCED) return { s: r.s0, x: r.x0, y: r.y0 };
   const k = 1 - Math.exp(-(now - r.t0) / IDLE_TAU);
-  return { s: r.s0 * (1 + IDLE_PUSH * k), x: r.x0 + sl.drift.x * 0.12 * k, y: r.y0 + sl.drift.y * 0.12 * k };
+  const ix = sl.idle ? sl.idle[0] : sl.drift.x * 0.12, iy = sl.idle ? sl.idle[1] : sl.drift.y * 0.12;
+  return { s: r.s0 * (1 + IDLE_PUSH * k), x: r.x0 + ix * k, y: r.y0 + iy * k };
 }
 
 /* ============================================================
@@ -667,8 +1155,8 @@ function camMove(from, to, dir, opt = {}) {
       front, back, dir: opt.dir0 || dir, resolve, last: now, turnAt: opt.turnAt, counter: opt.counter !== false,
       p: opt.p0 !== undefined ? opt.p0 : (dir > 0 ? 0 : 1),
       dur: opt.dur || (front ? front.moveDur : MOVE_MS),
-      b0: back ? (dir > 0 && cur ? { ...cur } : { s: 1, x: 0, y: 0 }) : null,
-      f1: front ? (dir < 0 && cur ? { ...cur } : { s: 1, x: 0, y: 0 }) : null,
+      b0: back ? (dir > 0 && cur ? { ...cur } : { s: back.restScale, x: 0, y: 0 }) : null,
+      f1: front ? (dir < 0 && cur ? { ...cur } : { s: front.restScale, x: 0, y: 0 }) : null,
     };
     if (opt.f1) m.f1 = opt.f1;
     if (REDUCED) m.dur = 700;
@@ -679,7 +1167,7 @@ function camMove(from, to, dir, opt = {}) {
     if (front) { front.scene.classList.add('front'); if (front.blur) front.blur.style.visibility = 'visible'; }
     if (back && back.blur) back.blur.style.visibility = 'visible';
     if (back) { back.scene.classList.remove('front'); back.scene.style.opacity = 1; }
-    if (m.counter) { counter.ticking = false; showDelta(m.vTo - m.vFrom, m.vTo < m.vFrom ? 1 : -1); }
+    if (m.counter) { counter.race = null; counter.ticking = false; showDelta(m.vTo - m.vFrom, m.vTo < m.vFrom ? 1 : -1); }
     C.rest = null; C.mv = m;
     applyMove(m);
   });
@@ -688,6 +1176,15 @@ function applyMove(m) {
   const p = m.p, e = E_CAM(p);
   const bump = REDUCED ? 0 : Math.sin(Math.PI * p);
   const blur = REDUCED ? 0 : Math.pow(clamp(slopeAt(p) / SLOPE_MAX), 1.6) * 0.92;
+  if (m.front && m.back && m.front.trans === 'pull') {
+    // 05 → 06: the same street; the camera pulls back while the scene blurs and darkens
+    const a = m.b0, z = m.f1, q = REDUCED ? 1 : e;
+    const pose = { s: a.s * Math.pow(z.s / a.s, q), x: lerp(a.x, z.x, q), y: lerp(a.y, z.y, q) };
+    setPose(m.back, pose); setPose(m.front, { ...pose });
+    m.back.scene.style.opacity = 1;
+    if (m.back.blur) m.back.blur.style.opacity = 0;
+    m.front.scene.style.opacity = (REDUCED ? p : smooth(0.08, 0.92, p)).toFixed(3);
+  } else {
   if (m.back) {
     const b = m.back, b0 = m.b0;
     setPose(b, REDUCED ? b0 : { s: b0.s * Math.pow(PUSH_MAX, e), x: b0.x + b.drift.x * e, y: b0.y + b.drift.y * e });
@@ -699,6 +1196,7 @@ function applyMove(m) {
     setPose(f, REDUCED ? f1 : { s: s0 * Math.pow(f1.s / s0, e), x: f1.x - f.drift.x * 0.5 * (1 - e), y: f1.y - f.drift.y * 0.5 * (1 - e) });
     f.scene.style.opacity = (REDUCED ? p : smooth(0.28, 0.72, p)).toFixed(3);
     if (f.blur) f.blur.style.opacity = blur.toFixed(3);
+  }
   }
   // parallax: the micro-UI moves less than the image
   ui.style.transform = bump ? `translate3d(0,${(-5 * bump).toFixed(2)}px,0) scale(${(1 + 0.014 * bump).toFixed(4)})` : '';
@@ -734,7 +1232,11 @@ function frame(now) {
   } else if (C.rest) {
     setPose(C.rest, restPose(C.rest, now));
   }
-  if (counter.armed) counter.frame(now);
+  if (counter.race) {
+    const r = counter.race, q = clamp((now - r.t0) / r.dur);
+    counter.value = lerp(r.from, r.to, E_CAM(q)); counter.render();
+    if (q >= 1) { counter.race = null; counter.resume(); }
+  } else if (counter.armed) counter.frame(now);
   requestAnimationFrame(frame);
 }
 
@@ -794,13 +1296,15 @@ function runBeat(sl, b) {
 }
 function resetEl(el) {
   el.getAnimations({ subtree: true }).forEach(a => a.cancel());
-  el.classList.remove('on', 'dim');
+  el.classList.remove('on', 'dim', 'ghost');
   $$('.on, .dim', el).forEach(x => x.classList.remove('on', 'dim'));
   if (el._reset) el._reset();
+  $$('.flap', el).forEach(f => f._reset && f._reset());
 }
 function resetText(sl) {
   $$('[data-b]', sl.el).forEach(resetEl);
   if (sl.shade) { sl.shade.getAnimations().forEach(a => a.cancel()); sl.shade.classList.remove('on'); }
+  if (sl.ambient) { sl.ambient.cancel(); sl.ambient = null; }
   if (sl.glow) { sl.glow.getAnimations().forEach(a => a.cancel()); sl.glowLevel = sl.glowBase; sl.glow.style.opacity = sl.glowBase; syncLit(sl); }
   sl.rec = [];
 }
@@ -814,6 +1318,8 @@ async function undoBeat(sl, b) {
     litVisible(sl);
     sl.glow.animate([{ opacity: from }, { opacity: r.glow }], { duration: 600, easing: 'ease-out' }).finished.then(() => syncLit(sl), () => {});
   }
+  if (r.cls) r.cls.forEach(([el, cls]) => { el.classList.remove(cls); el.animate([{ opacity: 0.16 }, { opacity: 1 }], { duration: 450, easing: 'ease-out' }); });
+  if (r.bal !== undefined) { counter.race = null; counter.set(r.bal); counter.resume(); }
   await Promise.all(anims.map(a => a.finished));
   r.els.forEach(resetEl);
   sl.rec[b] = null;
@@ -840,9 +1346,48 @@ async function restore(sl, beat) {
    ============================================================ */
 async function finishBuild() { if (S.build) { S.tl.finish(); await S.build; S.build = null; } }
 
+let uiOn = true;
+function uiShow(on, instant) {
+  if (on === uiOn) return;
+  uiOn = on;
+  ui.style.opacity = on ? '' : 0;
+  if (!instant) ui.animate([{ opacity: on ? 0 : 1 }, { opacity: on ? 1 : 0 }], { duration: on ? 500 : 250, easing: 'ease-out' });
+}
+// decode the scenes around the current slide (phones keep fewer pictures in memory)
+const warmed = new Set();
+function warm(i) {
+  for (let k = Math.max(0, i - 1); k < Math.min(slides.length, i + 3); k++) {
+    if (warmed.has(k)) continue; warmed.add(k);
+    $$('img', slides[k].el).forEach(img => { if (img.decode) img.decode().catch(() => {}); });
+  }
+}
+const wait = ms => new Promise(r => setTimeout(r, ms));
+// 09 → question: a hard cut to black, held for one second; going back is a quick cut too
+async function cut(A, B, dir) {
+  C.rest = null;
+  if (A) { A.scene.style.opacity = 0; A.el.classList.remove('live'); A.scene.classList.remove('front'); }
+  fogEl.style.opacity = 0;
+  uiShow(!B.noUI, true);
+  announce(B);
+  await wait(dir > 0 ? (REDUCED ? 500 : 1000) : 120);
+  B.el.classList.add('live'); B.scene.classList.remove('front'); B.scene.style.opacity = 1;
+  const pose = { s: B.restScale, x: 0, y: 0 };
+  setPose(B, pose); B.rest = { s0: pose.s, x0: 0, y0: 0, t0: performance.now() }; C.rest = B;
+  fogEl.style.opacity = B.fog;
+  S.i = B.i;
+  counter.race = null; counter.set(B.bal); counter.resume();
+  if (dir > 0) { B.beat = 0; runBeat(B, 0); }
+  else await restore(B, B.beats.length - 1);
+  updateNotes();
+}
+
 async function go(to, dir) {
   const A = slides[S.i] || null, B = slides[to];
+  const decoded = Promise.all($$('img', B.el).map(img => img.decode ? img.decode().catch(() => {}) : 0));
   if (A) { A.exitBeat = A.beat; await exitText(A); }
+  await decoded;
+  if ((dir > 0 && B.trans === 'cut') || (dir < 0 && A && A.trans === 'cut')) { await cut(A, B, dir); warm(B.i); return; }
+  if (!B.noUI) uiShow(true);
   B.el.classList.add('live');
   resetText(B);
   B.scene.style.opacity = 0.001;                    // let the GPU upload the scene before it is seen
@@ -850,6 +1395,8 @@ async function go(to, dir) {
   announce(B);
   const restS = await camMove(A, B, dir);
   S.i = restS.i;
+  uiShow(!restS.noUI);
+  warm(restS.i);
   if (restS === B) {
     if (dir > 0) { B.beat = 0; runBeat(B, 0); }
     else await restore(B, B.beats.length - 1);
@@ -1075,11 +1622,12 @@ function startFog() {
    ============================================================ */
 function buildPrintUI() {
   slides.forEach(sl => {
+    if (sl.noUI) return;
     const d = document.createElement('div'); d.className = 'pui'; d.setAttribute('aria-hidden', 'true');
     d.innerHTML = `<i class="rule t"></i><i class="rule b"></i><i class="cross c1"></i><i class="cross c2"></i><i class="cross c3"></i><i class="cross c4"></i>
       <div class="lbl tl"></div><div class="lbl tr"><span class="k">Life balance</span><span class="v"></span></div>
       <div class="lbl bl"></div><div class="lbl br"></div>`;
-    $('.tl', d).textContent = sl.code; $('.tr .v', d).textContent = fmtBal(sl.bal);
+    $('.tl', d).textContent = sl.code; $('.tr .v', d).textContent = fmtBal(sl.balEnd !== null ? sl.balEnd : sl.bal);
     $('.bl', d).textContent = DECK_TITLE; $('.br', d).textContent = `${sl.num} / ${pad(TOTAL, 2)}`;
     sl.el.appendChild(d);
   });
@@ -1104,17 +1652,21 @@ async function boot() {
   fit();
   const fonts = ['300 148px "Barlow Condensed"', '400 40px "Barlow Condensed"', '200 40px "Barlow Condensed"', '400 20px "IBM Plex Mono"', '500 60px "IBM Plex Mono"'];
   await Promise.all(fonts.map(f => document.fonts.load(f).catch(() => {})));
-  const imgs = $$('.cam img');
+  // computers preload every scene; phones decode the first scenes now and the next ones as the talk goes on
+  const COARSE = matchMedia('(pointer: coarse)').matches;
+  const first = COARSE ? slides.slice(0, 3) : slides;
+  first.forEach(s => warmed.add(s.i));
+  const imgs = first.flatMap(s => $$('.cam img', s.el));
   let n = 0;
-  const scenesN = slides.filter(s => s.cam).length;
-  const msg = () => { sbMsg.textContent = `Loading scenes ${Math.min(scenesN, Math.round(n / imgs.length * scenesN))} / ${scenesN}`; };
+  const scenesN = first.filter(s => $('.cam img', s.el)).length;
+  const msg = () => { sbMsg.textContent = `Loading scenes ${Math.min(scenesN, Math.round(n / Math.max(1, imgs.length) * scenesN))} / ${scenesN}`; };
   msg();
   await Promise.all(imgs.map(img => (img.decode ? img.decode() : Promise.resolve()).catch(() => {}).then(() => { n++; msg(); })));
 
   $$('.hl').forEach(splitLetters);
   $$('.swap .to').forEach(splitLetters);
-  $$('.sub').forEach(splitWords);
-  $$('.mlabel').forEach(el => { el.setAttribute('aria-label', el.textContent); setType(el, el.textContent); });
+  $$('.sub, .words').forEach(splitWords);
+  $$('.mlabel, .rcpt .rh').forEach(el => { el.setAttribute('aria-label', el.textContent); setType(el, el.textContent); });
   $$('.flap').forEach(buildFlap);
   buildPrintUI();
 
@@ -1146,7 +1698,8 @@ async function jumpTo(idx, beat) {
   standby.style.display = 'none';
   S.started = true; tStart = performance.now();
   const sl = slides[idx]; sl.el.classList.add('live'); sl.scene.style.opacity = 1;
-  setPose(sl, { s: 1, x: 0, y: 0 }); sl.rest.t0 = performance.now(); C.rest = sl; S.i = idx;
+  setPose(sl, { s: sl.restScale, x: 0, y: 0 }); sl.rest = { s0: sl.restScale, x0: 0, y0: 0, t0: performance.now() }; C.rest = sl; S.i = idx;
+  uiShow(!sl.noUI, true); warm(idx);
   fogEl.style.opacity = sl.fog; uiFirst = false;
   setType(balK, 'Life balance'); setType(uiTitle, DECK_TITLE); balV.classList.add('on');
   counter.set(sl.bal); counter.armed = true; counter.resume();

@@ -5,8 +5,8 @@ Single offline HTML file: every scene, font and script is inside it.
 
 **Open:** `dist/what-if-life-as-currency.html` in Chrome, Edge or Firefox. Press **F** for full screen.
 
-> Status: **phase 1 preview.** Slides 1 and 3 only, with the camera move between them.
-> The full 10-slide deck comes after the look and motion are approved.
+> Status: **full deck, 10 slides.** The closing question (slide 9) is its own page: a hard cut to
+> black, then the question alone. The PDF therefore has 11 pages.
 
 ## Presenting
 
@@ -37,4 +37,4 @@ Open `…html#3` to jump straight to slide 3 in its final state (for rehearsing)
 - `python3 build.py`: rebuilds `dist/`. Needs Python 3 with Pillow and NumPy.
   `python3 build.py --web PATH` also writes a copy without the `<html>/<head>/<body>` skeleton,
   for hosts that wrap the page in their own document (used for the private preview link).
-- `node tools/check-contrast.js 1 3`: measures text contrast against the photo behind each text (needs Playwright).
+- `node tools/check-contrast.js`: measures the contrast of every text against the photo behind it, on all slides (needs Playwright).
