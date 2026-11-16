@@ -38,7 +38,9 @@ body.idle,body.idle *{cursor:none!important}
 /* ============================================================
    STAGE — 1920×1080, scaled to fit
    ============================================================ */
-#stage{position:fixed;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0;overflow:hidden;background:var(--ink);contain:strict}
+/* the film is laid out at 1920×1080 and shrunk with `zoom`, so phones only draw what fits the screen */
+#frame{position:fixed;left:env(safe-area-inset-left,0px);right:env(safe-area-inset-right,0px);top:env(safe-area-inset-top,0px);bottom:env(safe-area-inset-bottom,0px);display:flex;align-items:center;justify-content:center;overflow:hidden}
+#stage{position:relative;flex:none;width:1920px;height:1080px;overflow:hidden;background:var(--ink);contain:strict}
 /* phones held upright: a small tip under the letterboxed film */
 #rotate{display:none;position:fixed;left:0;right:0;bottom:calc(28px + env(safe-area-inset-bottom, 0px));padding:0 16px;text-align:center;font:400 12px/1.5 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:rgba(237,238,239,.62);pointer-events:none}
 @media (orientation:portrait) and (pointer:coarse){#rotate{display:block}}
@@ -162,7 +164,8 @@ body.idle,body.idle *{cursor:none!important}
 @page{size:1920px 1080px;margin:0}
 @media print{html,body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
 body.print{overflow:visible;height:auto;background:var(--ink)}
-body.print #stage{position:relative;left:auto;top:auto;margin:0;transform:none!important;height:auto;overflow:visible;contain:none;background:none}
+body.print #frame{position:static;display:block;overflow:visible}
+body.print #stage{position:relative;left:auto;top:auto;margin:0;transform:none!important;zoom:1!important;height:auto;overflow:visible;contain:none;background:none}
 body.print #fog,body.print #vignette,body.print #ui,body.print #grain,body.print #standby,body.print #black,body.print #live,body.print #rotate{display:none}
 body.print .slide{display:block!important;position:relative;width:1920px;height:1080px;overflow:hidden;break-after:page;page-break-after:always;background:var(--ink)}
 body.print .slide:last-of-type{break-after:auto;page-break-after:auto}
@@ -177,6 +180,7 @@ body.print .slide::after{content:"";position:absolute;inset:0;z-index:4;pointer-
 </style>
 </head>
 <body>
+<div id="frame">
 <div id="stage" role="region" aria-roledescription="presentation" aria-label="What if years of your life could be used as money?">
 
 <!-- ============================================================
@@ -266,6 +270,7 @@ body.print .slide::after{content:"";position:absolute;inset:0;z-index:4;pointer-
   <p class="sb-k">→ / space / click: next · ←: back · F: full screen · N: speaker notes · R: replay · B: black</p>
 </div>
 <div id="black" aria-hidden="true"></div>
+</div>
 </div>
 <div id="live" class="sr" aria-live="polite"></div>
 <p id="rotate">Turn your phone sideways for the full view · swipe left or tap: next · swipe right: back</p>
@@ -443,7 +448,6 @@ async function letters(tl, h, o = {}) {
   tl.show(h);
   if (tl.ff) return;
   if (REDUCED) { tl.anim(h, [{ opacity: 0 }, { opacity: 1 }], { duration: 450, easing: 'ease-out', fill: 'backwards' }); await tl.wait(300); return; }
-  const fs = parseFloat(getComputedStyle(h).fontSize), d = spread * fs;
   let n = 0;
   h._lines.forEach(line => line.forEach(c => {
     tl.anim(c.inner, [{ opacity: 0, transform: `translate3d(0,${rise}px,0)` }, { opacity: 1, transform: 'none' }],
@@ -451,7 +455,7 @@ async function letters(tl, h, o = {}) {
   }));
   const at = (n - 1) * stagger + dur * 0.55;
   h._lines.forEach(line => line.forEach(c => {
-    if (c.k) tl.anim(c.el, [{ transform: `translate3d(${(c.k * d).toFixed(2)}px,0,0)` }, { transform: 'none' }],
+    if (c.k) tl.anim(c.el, [{ transform: `translate3d(${(c.k * spread).toFixed(4)}em,0,0)` }, { transform: 'none' }],
       { duration: tighten, delay: at, easing: E_IO, fill: 'backwards' });
   }));
   await tl.wait((n - 1) * stagger + dur * 0.5);
@@ -1015,14 +1019,16 @@ addEventListener('contextmenu', e => { e.preventDefault(); if (performance.now()
 let idleT = 0;
 addEventListener('pointermove', () => { document.body.classList.remove('idle'); clearTimeout(idleT); idleT = setTimeout(() => document.body.classList.add('idle'), 2200); });
 
-// letterbox the 1920×1080 film inside the visible area (minus any safe-area padding on <html>)
+// letterbox the 1920×1080 film inside the visible area.
+// `zoom` (not transform: scale) so every layer is drawn at its on-screen size: a scaled-down
+// 1920×1080 stage made iPhones draw each layer at full size ×3 and run out of memory.
+const frameBox = $('#frame');
+const ZOOM_OK = !!(window.CSS && CSS.supports && CSS.supports('zoom', '0.5'));
 function fit() {
-  if (document.body.classList.contains('print')) { stage.style.transform = ''; return; }
-  const cs = getComputedStyle(document.documentElement);
-  const pt = parseFloat(cs.paddingTop) || 0, pb = parseFloat(cs.paddingBottom) || 0;
-  const vw = innerWidth, vh = Math.max(1, innerHeight - pt - pb);
-  const k = Math.min(vw / W, vh / H);
-  stage.style.transform = `translate(${((vw - W * k) / 2).toFixed(2)}px,${(pt + (vh - H * k) / 2).toFixed(2)}px) scale(${k.toFixed(5)})`;
+  if (document.body.classList.contains('print')) { stage.style.zoom = ''; stage.style.transform = ''; return; }
+  const r = frameBox.getBoundingClientRect();
+  const k = Math.max(0.05, Math.min(r.width / W, r.height / H));
+  if (ZOOM_OK) stage.style.zoom = k.toFixed(5); else stage.style.transform = `scale(${k.toFixed(5)})`;
 }
 addEventListener('resize', fit);
 addEventListener('orientationchange', () => setTimeout(fit, 120));
@@ -1061,7 +1067,7 @@ function startFog() {
   fogAnims.forEach(a => a.cancel()); fogAnims = [];
   if (REDUCED) return;
   fogAnims.push($('#fog .fa').animate([{ transform: 'translate3d(0,0,0)' }, { transform: 'translate3d(-1920px,0,0)' }], { duration: 150000, iterations: Infinity }));
-  fogAnims.push($('#fog .fb').animate([{ transform: 'translate3d(0,0,0)' }, { transform: 'translate3d(-2400px,0,0)' }], { duration: 95000, iterations: Infinity }));
+  if ($('#fog .fb')) fogAnims.push($('#fog .fb').animate([{ transform: 'translate3d(0,0,0)' }, { transform: 'translate3d(-2400px,0,0)' }], { duration: 95000, iterations: Infinity }));
 }
 
 /* ============================================================
@@ -1113,8 +1119,11 @@ async function boot() {
   buildPrintUI();
 
   $('#fog .fa').style.backgroundImage = `url(${fogTexture(640, 270, 7, 5, 2, 0.42, 0.92, 0.3, 0.2)})`;
-  $('#fog .fb').style.backgroundImage = `url(${fogTexture(800, 220, 19, 6, 2, 0.45, 0.95, 0.45, 0.15)})`;
-  $('#grain').style.backgroundImage = `url(${grainTexture(220)})`;
+  if (matchMedia('(pointer: coarse)').matches) { $('#fog .fb').remove(); $('#grain').remove(); }
+  else {
+    $('#fog .fb').style.backgroundImage = `url(${fogTexture(800, 220, 19, 6, 2, 0.45, 0.95, 0.45, 0.15)})`;
+    $('#grain').style.backgroundImage = `url(${grainTexture(220)})`;
+  }
   startFog();
   requestAnimationFrame(frame);
 
