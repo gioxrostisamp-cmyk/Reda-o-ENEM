@@ -1,0 +1,1093 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What If — Life as Currency</title>
+<meta name="description" content="What if years of your life could be used as money? A cinematic slide deck for an English class.">
+<style id="font-css">
+@font-face{font-family:'Barlow Condensed';font-style:normal;font-weight:200;font-display:block;src:url({{FONT:barlow-condensed-latin-200-normal}}) format('woff2')}
+@font-face{font-family:'Barlow Condensed';font-style:normal;font-weight:300;font-display:block;src:url({{FONT:barlow-condensed-latin-300-normal}}) format('woff2')}
+@font-face{font-family:'Barlow Condensed';font-style:normal;font-weight:400;font-display:block;src:url({{FONT:barlow-condensed-latin-400-normal}}) format('woff2')}
+@font-face{font-family:'IBM Plex Mono';font-style:normal;font-weight:400;font-display:block;src:url({{FONT:ibm-plex-mono-latin-400-normal}}) format('woff2')}
+@font-face{font-family:'IBM Plex Mono';font-style:normal;font-weight:500;font-display:block;src:url({{FONT:ibm-plex-mono-latin-500-normal}}) format('woff2')}
+</style>
+<style>
+/* ============================================================
+   TOKENS
+   ============================================================ */
+:root{
+  --ink:#0E0F11;            /* deep near-black */
+  --ink-a:14,15,17;
+  --concrete:#8E9296;       /* misty grey */
+  --paper:#EDEEEF;          /* soft white light */
+  --mute:rgba(237,238,239,.80);
+  --hair:rgba(237,238,239,.30);
+  --amber:#FF6A1A;          /* time running out — one element per slide */
+  --f-head:'Barlow Condensed',sans-serif;
+  --f-mono:'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;
+  --m:80px;                 /* outer margin, same on every slide */
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#000;color:var(--paper);overflow:hidden}
+body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:geometricPrecision;user-select:none;-webkit-user-select:none}
+body.idle,body.idle *{cursor:none!important}
+.sr{position:fixed;left:0;top:0;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ============================================================
+   STAGE — 1920×1080, scaled to fit
+   ============================================================ */
+#stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;margin:-540px 0 0 -960px;overflow:hidden;background:var(--ink);contain:strict}
+
+/* each slide: scene (camera) + shade + text. Not a stacking context. */
+.slide{position:absolute;inset:0;display:none}
+.slide.live{display:block}
+.notes{display:none}
+
+.scene{position:absolute;inset:0;overflow:hidden;z-index:1;opacity:0;will-change:opacity}
+.scene.front{z-index:2}
+.cam{position:absolute;left:-288px;top:-162px;width:2496px;height:1404px;will-change:transform;backface-visibility:hidden}
+.cam img{position:absolute;inset:0;width:100%;height:100%;display:block;-webkit-user-drag:none;pointer-events:none}
+.cam .blur{opacity:0;will-change:opacity}
+.cam .lit{opacity:0;will-change:opacity}
+
+#fog{position:absolute;inset:0;z-index:3;pointer-events:none;opacity:0}
+#fog .fl{position:absolute;left:0;background-repeat:repeat-x;will-change:transform}
+#fog .fa{top:0;height:100%;width:3840px;background-size:1920px 100%}
+#fog .fb{top:34%;height:66%;width:4800px;background-size:2400px 100%;opacity:.75}
+
+/* static cinematic vignette + soft bands that keep the micro-UI readable */
+#vignette{position:absolute;inset:0;z-index:4;pointer-events:none;background:
+  linear-gradient(to bottom,rgba(var(--ink-a),.84) 0,rgba(var(--ink-a),.66) 92px,rgba(var(--ink-a),0) 236px),
+  linear-gradient(to top,rgba(var(--ink-a),.84) 0,rgba(var(--ink-a),.66) 92px,rgba(var(--ink-a),0) 236px),
+  radial-gradient(ellipse 78% 80% at 50% 50%,rgba(var(--ink-a),0) 58%,rgba(var(--ink-a),.58) 100%)}
+
+.shade{position:absolute;inset:0;z-index:5;pointer-events:none;opacity:0}
+.shade.on{opacity:1}
+.txt{position:absolute;inset:0;z-index:6;pointer-events:none}
+
+/* ============================================================
+   TYPE
+   ============================================================ */
+[data-b]{opacity:0}
+[data-b].on{opacity:1}
+.acc{color:var(--amber)}
+
+.hl{position:absolute;left:var(--m);bottom:var(--hb,152px);font:300 var(--hs,148px)/.9 var(--f-head);letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;color:var(--paper);text-shadow:0 0 30px rgba(var(--ink-a),.35)}
+.hl .ln{display:block}
+.w{display:inline-block;white-space:nowrap}
+.ch,.ci{display:inline-block}
+
+.sub{position:absolute;left:var(--m);font:400 52px/1.15 var(--f-head);letter-spacing:.02em;color:rgba(237,238,239,.94);text-shadow:0 0 24px rgba(var(--ink-a),.4)}
+.wd{display:inline-block;white-space:pre}
+
+.lbl,.mlabel{font:400 20px/1 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--mute);white-space:pre;text-shadow:0 0 12px rgba(var(--ink-a),.7)}
+.mlabel{position:absolute;font-size:24px;text-shadow:0 0 16px rgba(var(--ink-a),.6)}
+.tc{display:inline}
+.tc.hid{opacity:0}
+.tc.cur{background:var(--paper);color:transparent}
+
+/* split-flap: glyphs cut in two by a hairline gap, no tiles */
+.flap{position:absolute;left:var(--m);display:flex;gap:6px;font:400 60px/1 var(--f-mono);color:var(--paper);text-shadow:0 0 18px rgba(var(--ink-a),.5)}
+.fc{position:relative;display:block;width:.64em;height:1.3em;perspective:260px}
+.fc.sp{width:.36em}
+.fc .h{position:absolute;left:0;right:0;overflow:hidden;backface-visibility:hidden}
+.fc .t,.fc .ft{top:0;height:calc(50% - 2px)}
+.fc .b,.fc .fb{bottom:0;height:calc(50% - 2px)}
+.fc .ft{transform-origin:50% 100%;visibility:hidden}
+.fc .fb{transform-origin:50% 0;visibility:hidden}
+.fc i{position:absolute;left:0;right:0;height:1.3em;line-height:1.3em;text-align:center;font-style:normal}
+.fc .t i,.fc .ft i{top:0}
+.fc .b i,.fc .fb i{bottom:0}
+
+/* GOLD → LIFE */
+.swap{position:absolute;left:var(--m);display:flex;align-items:center;gap:34px;font:300 124px/1 var(--f-head);letter-spacing:.04em;text-transform:uppercase;color:var(--paper);text-shadow:0 0 30px rgba(var(--ink-a),.4)}
+.swap .from{position:relative;opacity:0}
+.swap .from.on{opacity:1}
+.swap .from.on.dim{opacity:.5}
+.swap .strike{position:absolute;left:-8px;right:-8px;top:50%;height:4px;margin-top:-2px;background:var(--paper);transform:scaleX(0);transform-origin:0 50%}
+.swap .strike.on{transform:none}
+.swap .arrow{position:relative;width:150px;height:40px}
+.swap .shaft{position:absolute;left:0;right:3px;top:50%;height:2px;margin-top:-1px;background:var(--paper);transform:scaleX(0);transform-origin:0 50%}
+.swap .shaft.on{transform:none}
+.swap .head{position:absolute;right:0;top:0;width:22px;height:40px;opacity:0;color:var(--paper)}
+.swap .head.on{opacity:1}
+.swap .to{opacity:0}
+.swap .to.on{opacity:1}
+
+/* ============================================================
+   MICRO-UI — identical positions on every slide
+   ============================================================ */
+#ui{position:absolute;inset:0;z-index:7;pointer-events:none;will-change:transform}
+.frame{opacity:0}
+.frame.on{opacity:1}
+.rule{position:absolute;left:104px;right:104px;height:1px;background:var(--hair)}
+.rule.t{top:96px;transform-origin:0 50%}
+.rule.b{top:984px;transform-origin:100% 50%}
+.cross{position:absolute;width:24px;height:24px;margin:-12px 0 0 -12px}
+.cross::before,.cross::after{content:"";position:absolute;background:rgba(237,238,239,.78)}
+.cross::before{left:0;right:0;top:11.5px;height:1px}
+.cross::after{top:0;bottom:0;left:11.5px;width:1px}
+.c1{left:80px;top:96px}.c2{left:1840px;top:96px}.c3{left:80px;top:984px}.c4{left:1840px;top:984px}
+.lbl{position:absolute}
+.lbl.tl{left:var(--m);top:52px}
+.lbl.tr{right:var(--m);top:52px}
+.lbl.bl{left:var(--m);bottom:52px}
+.lbl.br{right:var(--m);bottom:52px}
+.lbl .v{color:var(--paper);margin-left:20px;font-variant-numeric:tabular-nums}
+#bal .v{opacity:0}
+#bal .v.on{opacity:1}
+.lbl.delta{top:116px;right:var(--m);opacity:0}
+
+#grain{position:absolute;inset:0;z-index:8;pointer-events:none;opacity:.55;background-size:220px 220px}
+
+/* standby (before the film starts) + blackout */
+#standby{position:absolute;inset:0;z-index:9;background:var(--ink);display:grid;place-items:center;text-align:center}
+#standby .sb-t{font:300 64px/1 var(--f-head);letter-spacing:.12em;text-transform:uppercase;color:var(--paper)}
+#standby .sb-m{margin-top:34px;font:400 20px/1 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--mute)}
+#standby .sb-k{position:absolute;left:0;right:0;bottom:52px;font:400 20px/1 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:rgba(237,238,239,.42)}
+#black{position:absolute;inset:0;z-index:10;background:#000;opacity:0;pointer-events:none}
+
+/* per-slide static micro-UI, only used for print/PDF */
+.pui{display:none;position:absolute;inset:0;z-index:7;pointer-events:none}
+
+/* ============================================================
+   PRINT / PDF — every slide in its final state, one per page
+   ============================================================ */
+@page{size:1920px 1080px;margin:0}
+@media print{html,body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+body.print{overflow:visible;height:auto;background:var(--ink)}
+body.print #stage{position:relative;left:auto;top:auto;margin:0;transform:none!important;height:auto;overflow:visible;contain:none;background:none}
+body.print #fog,body.print #vignette,body.print #ui,body.print #grain,body.print #standby,body.print #black,body.print #live{display:none}
+body.print .slide{display:block!important;position:relative;width:1920px;height:1080px;overflow:hidden;break-after:page;page-break-after:always;background:var(--ink)}
+body.print .slide:last-of-type{break-after:auto;page-break-after:auto}
+body.print .scene{opacity:1!important}
+body.print .cam{transform:none!important}
+body.print .cam .blur{opacity:0!important}
+body.print .pui{display:block}
+body.print .slide::after{content:"";position:absolute;inset:0;z-index:4;pointer-events:none;background:
+  linear-gradient(to bottom,rgba(var(--ink-a),.84) 0,rgba(var(--ink-a),.66) 92px,rgba(var(--ink-a),0) 236px),
+  linear-gradient(to top,rgba(var(--ink-a),.84) 0,rgba(var(--ink-a),.66) 92px,rgba(var(--ink-a),0) 236px),
+  radial-gradient(ellipse 78% 80% at 50% 50%,rgba(var(--ink-a),0) 58%,rgba(var(--ink-a),.58) 100%)}
+</style>
+</head>
+<body>
+<div id="stage" role="region" aria-roledescription="presentation" aria-label="What if years of your life could be used as money?">
+
+<!-- ============================================================
+     01 — TITLE · IMG 1 · Time Bank facade
+     ============================================================ -->
+<section class="slide" id="s1" aria-label="Slide 1"
+  data-scene="img1-time-bank" data-focus="0.586 0.77"
+  data-code="FIG-01 / THE TIME BANK" data-num="01" data-title="Title — The Time Bank"
+  data-bal="50Y 000D 00H 00M 00S" data-fog="0.20">
+  <div class="scene"><div class="cam">
+    <img class="sharp" alt="" src="{{IMG:img1-time-bank:sharp}}">
+    <img class="lit" alt="" src="{{IMG:img1-time-bank:lit}}">
+    <img class="blur" alt="" src="{{IMG:img1-time-bank:blur}}">
+  </div></div>
+  <div class="shade" style="background:
+    radial-gradient(ellipse 900px 640px at 300px 720px,rgba(14,15,17,.84) 0%,rgba(14,15,17,.72) 45%,rgba(14,15,17,0) 100%)"></div>
+  <div class="txt">
+    <h1 class="hl" data-b style="--hs:168px;--hb:212px">
+      <span class="ln">Time is</span>
+      <span class="ln">money.</span>
+      <span class="ln">Literally.</span>
+    </h1>
+    <p class="sub" data-b style="bottom:128px">What if your life was your currency?</p>
+    <p class="mlabel byline" data-b style="right:80px;bottom:136px">[YOUR NAME] · ENGLISH CLASS</p>
+  </div>
+  <aside class="notes">
+    <p>Imagine a world where you pay for everything with your life.</p>
+    <p>Not with money. With years.</p>
+  </aside>
+</section>
+
+<!-- ============================================================
+     03 — THE TURNING POINT · IMG 3 · vault
+     ============================================================ -->
+<section class="slide" id="s3" aria-label="Slide 3"
+  data-scene="img3-vault" data-focus="0.62 0.54"
+  data-code="FIG-03 / 1971" data-num="03" data-title="The turning point"
+  data-bal="46Y 017D 09H 26M 41S" data-fog="0.10">
+  <div class="scene"><div class="cam">
+    <img class="sharp" alt="" src="{{IMG:img3-vault:sharp}}">
+    <img class="lit" alt="" src="{{IMG:img3-vault:lit}}">
+    <img class="blur" alt="" src="{{IMG:img3-vault:blur}}">
+  </div></div>
+  <div class="shade" style="background:
+    radial-gradient(ellipse 1050px 560px at 260px 840px,rgba(14,15,17,.86) 0%,rgba(14,15,17,.7) 50%,rgba(14,15,17,0) 100%),
+    radial-gradient(ellipse 820px 360px at 240px 230px,rgba(14,15,17,.78) 0%,rgba(14,15,17,.55) 45%,rgba(14,15,17,0) 100%)"></div>
+  <div class="txt">
+    <div class="swap" data-b style="top:170px">
+      <span class="from"><span>Gold</span><i class="strike"></i></span>
+      <span class="arrow" aria-hidden="true"><i class="shaft"></i><svg class="head" viewBox="0 0 22 40"><path d="M2 6 L20 20 L2 34" fill="none" stroke="currentColor" stroke-width="2"/></svg></span>
+      <span class="to acc"><span class="ln">Life</span></span>
+    </div>
+    <div class="flap" data-b data-text="AUGUST 15, 1971" style="bottom:462px"></div>
+    <h1 class="hl" data-b style="--hs:148px;--hb:152px">
+      <span class="ln">1971: money</span>
+      <span class="ln">loses its gold</span>
+    </h1>
+  </div>
+  <aside class="notes">
+    <p>On August 15, 1971, President Nixon ended the dollar’s convertibility into gold, at 35 dollars per ounce.</p>
+    <p>From then on, money was backed only by trust.</p>
+    <p>In my world, that same year, scientists discover how to transfer lifespan, and governments back money with human life.</p>
+  </aside>
+</section>
+
+<div id="fog" aria-hidden="true"><div class="fl fa"></div><div class="fl fb"></div></div>
+<div id="vignette" aria-hidden="true"></div>
+
+<div id="ui" aria-hidden="true">
+  <div class="frame">
+    <i class="rule t"></i><i class="rule b"></i>
+    <i class="cross c1"></i><i class="cross c2"></i><i class="cross c3"></i><i class="cross c4"></i>
+  </div>
+  <div class="lbl tl" id="ui-code"></div>
+  <div class="lbl tr" id="bal"><span class="k"></span><span class="v"></span></div>
+  <div class="lbl delta" id="bal-delta"></div>
+  <div class="lbl bl" id="ui-title"></div>
+  <div class="lbl br" id="ui-num"></div>
+</div>
+
+<div id="grain" aria-hidden="true"></div>
+<div id="standby">
+  <div>
+    <p class="sb-t">What if — life as currency</p>
+    <p class="sb-m" id="sb-msg">Loading scenes</p>
+  </div>
+  <p class="sb-k">→ / space / click: next · ←: back · F: full screen · N: speaker notes · R: replay · B: black</p>
+</div>
+<div id="black" aria-hidden="true"></div>
+</div>
+<div id="live" class="sr" aria-live="polite"></div>
+<noscript><p style="position:fixed;inset:0;display:grid;place-items:center;font:20px monospace;color:#eee">This presentation needs JavaScript.</p></noscript>
+
+<script>
+(() => {
+'use strict';
+
+/* ============================================================
+   CONFIG
+   ============================================================ */
+const TOTAL = 10;                  // slides in the full deck (shown as "03 / 10")
+const DECK_TITLE = 'What if — life as currency';
+const W = 1920, H = 1080, PADX = 288, PADY = 162;   // scene box is 130% of the frame
+const MOVE_MS = 1600;              // camera move between scenes (1.4–1.8 s)
+const PUSH_MAX = 1.35;             // outgoing scene push-in
+const IDLE_PUSH = 0.06, IDLE_TAU = 20000;           // slow push: ~3% in the first 10 s, eases out
+const STAGGER = 25;                // ms per headline letter
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const lerp = (a, b, t) => a + (b - a) * t;
+const smooth = (a, b, x) => { const t = clamp((x - a) / (b - a)); return t * t * (3 - 2 * t); };
+const pad = (n, l) => String(n).padStart(l, '0');
+function mulberry32(a) { return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function bezier(p1x, p1y, p2x, p2y) {
+  const cx = 3 * p1x, bx = 3 * (p2x - p1x) - cx, ax = 1 - cx - bx;
+  const cy = 3 * p1y, by = 3 * (p2y - p1y) - cy, ay = 1 - cy - by;
+  const sx = t => ((ax * t + bx) * t + cx) * t, sy = t => ((ay * t + by) * t + cy) * t, dx = t => (3 * ax * t + 2 * bx) * t + cx;
+  return x => {
+    if (x <= 0) return 0; if (x >= 1) return 1;
+    let t = x;
+    for (let i = 0; i < 8; i++) { const e = sx(t) - x; if (Math.abs(e) < 1e-6) return sy(t); const d = dx(t); if (Math.abs(d) < 1e-6) break; t -= e / d; }
+    let lo = 0, hi = 1; t = x;
+    for (let i = 0; i < 40; i++) { const v = sx(t); if (Math.abs(v - x) < 1e-6) break; if (v < x) lo = t; else hi = t; t = (lo + hi) / 2; }
+    return sy(t);
+  };
+}
+const E_CAM = bezier(0.65, 0, 0.35, 1);
+const E_IO = 'cubic-bezier(0.65, 0, 0.35, 1)';
+const E_OUT = 'cubic-bezier(0.16, 1, 0.3, 1)';
+const slopeAt = p => (E_CAM(clamp(p + 0.004)) - E_CAM(clamp(p - 0.004))) / 0.008;
+const SLOPE_MAX = (() => { let m = 0; for (let i = 1; i < 200; i++) m = Math.max(m, slopeAt(i / 200)); return m; })();
+
+const mq = matchMedia('(prefers-reduced-motion: reduce)');
+let REDUCED = mq.matches;
+if (mq.addEventListener) mq.addEventListener('change', e => { REDUCED = e.matches; startFog(); });
+
+const YEAR = 365 * 86400;
+function parseBal(s) {
+  const m = /(\d+)Y\s+(\d+)D\s+(\d+)H\s+(\d+)M\s+(\d+)S/.exec(s || '');
+  return m ? +m[1] * YEAR + +m[2] * 86400 + +m[3] * 3600 + +m[4] * 60 + +m[5] : 0;
+}
+function fmtBal(v) {
+  v = Math.max(0, Math.floor(v));
+  const y = Math.floor(v / YEAR); v -= y * YEAR;
+  const d = Math.floor(v / 86400); v -= d * 86400;
+  const h = Math.floor(v / 3600); v -= h * 3600;
+  const m = Math.floor(v / 60), s = v - m * 60;
+  return `${pad(y, 2)}Y ${pad(d, 3)}D ${pad(h, 2)}H ${pad(m, 2)}M ${pad(s, 2)}S`;
+}
+function fmtDelta(v) {
+  v = Math.abs(Math.round(v));
+  const y = Math.floor(v / YEAR), d = Math.floor((v - y * YEAR) / 86400);
+  return `${y}Y ${pad(d, 3)}D`;
+}
+
+/* ============================================================
+   TIMELINE — every build can be fast-forwarded to its final state
+   ============================================================ */
+class TL {
+  constructor(ff = false) { this.ff = ff; this.anims = new Set(); this.timers = new Set(); this.finishers = new Set(); this.rec = null; }
+  wait(ms) {
+    if (this.ff || ms <= 0) return Promise.resolve();
+    return new Promise(res => { const t = { res }; t.id = setTimeout(() => { this.timers.delete(t); res(); }, ms); this.timers.add(t); });
+  }
+  anim(el, kf, opt) {
+    const a = el.animate(kf, opt);
+    if (this.ff) { a.finish(); a.cancel(); return a; }
+    this.anims.add(a);
+    const drop = () => this.anims.delete(a);
+    a.finished.then(drop, drop);
+    return a;
+  }
+  show(el) { el.classList.add('on'); if (this.rec && !this.rec.els.includes(el)) this.rec.els.push(el); }
+  onFinish(fn) { this.finishers.add(fn); return () => this.finishers.delete(fn); }
+  finish() {
+    if (this.ff) return;
+    this.ff = true;
+    for (const t of this.timers) { clearTimeout(t.id); t.res(); }
+    this.timers.clear();
+    for (const a of this.anims) { try { a.finish(); a.cancel(); } catch (e) {} }
+    this.anims.clear();
+    for (const f of this.finishers) f();
+    this.finishers.clear();
+  }
+}
+
+/* ============================================================
+   TEXT PREP
+   ============================================================ */
+function splitLetters(root) {
+  root.setAttribute('aria-label', root.textContent.replace(/\s+/g, ' ').trim());
+  const lines = [];
+  $$('.ln', root).forEach(ln => {
+    const chars = []; let k = 0, word = null;
+    const frag = document.createDocumentFragment();
+    const add = (txt, acc) => {
+      for (const ch of txt) {
+        if (/\s/.test(ch)) { if (word) { frag.appendChild(document.createTextNode(' ')); word = null; k++; } continue; }
+        if (!word) { word = document.createElement('span'); word.className = 'w'; frag.appendChild(word); }
+        const c = document.createElement('span'); c.className = 'ch' + (acc ? ' acc' : '');
+        const ci = document.createElement('span'); ci.className = 'ci'; ci.textContent = ch;
+        c.appendChild(ci); word.appendChild(c); chars.push({ el: c, inner: ci, k: k++ });
+      }
+    };
+    const walk = (node, acc) => { for (const n of Array.from(node.childNodes)) { if (n.nodeType === 3) add(n.textContent, acc); else if (n.nodeType === 1) walk(n, acc || n.classList.contains('acc')); } };
+    walk(ln, false);
+    ln.textContent = ''; ln.appendChild(frag); ln.setAttribute('aria-hidden', 'true');
+    lines.push(chars);
+  });
+  root._lines = lines;
+}
+function splitWords(el) {
+  const words = el.textContent.trim().split(/\s+/);
+  el.setAttribute('aria-label', words.join(' '));
+  el.textContent = '';
+  el._words = words.map((w, i) => {
+    const s = document.createElement('span'); s.className = 'wd'; s.textContent = w + (i < words.length - 1 ? ' ' : '');
+    s.setAttribute('aria-hidden', 'true'); el.appendChild(s); return s;
+  });
+}
+function setType(el, text) {
+  el.textContent = '';
+  el._chars = Array.from(text).map(ch => { const s = document.createElement('span'); s.className = 'tc'; s.textContent = ch; el.appendChild(s); return s; });
+}
+const FLAP_AZ = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', FLAP_09 = '0123456789';
+function buildFlap(el) {
+  const text = el.dataset.text;
+  el.setAttribute('aria-label', text);
+  el.textContent = '';
+  el._cells = Array.from(text).map(ch => {
+    const c = document.createElement('span');
+    c.className = 'fc' + (ch === ' ' ? ' sp' : '');
+    c.setAttribute('aria-hidden', 'true');
+    c.innerHTML = '<span class="h t"><i></i></span><span class="h b"><i></i></span><span class="h ft"><i></i></span><span class="h fb"><i></i></span>';
+    el.appendChild(c);
+    const [t, b, ft, fb] = c.children;
+    return { el: c, t: t.firstChild, b: b.firstChild, ft: ft.firstChild, fb: fb.firstChild, ftH: ft, fbH: fb, target: ch, cur: ' ' };
+  });
+  const set = (c, ch) => {
+    c.cur = ch; const g = ch === ' ' ? '' : ch;
+    c.t.textContent = c.b.textContent = c.ft.textContent = c.fb.textContent = g;
+    c.ftH.style.visibility = c.fbH.style.visibility = 'hidden';
+    c.el.getAnimations({ subtree: true }).forEach(a => a.cancel());
+  };
+  el._set = set;
+  el._reset = () => el._cells.forEach(c => set(c, ' '));
+  el._final = () => el._cells.forEach(c => set(c, c.target));
+  el._reset();
+}
+
+/* ============================================================
+   ACTIONS — the text choreography vocabulary
+   ============================================================ */
+// Headline: letters fade and rise 12px (25 ms stagger), then the tracking tightens slightly.
+async function letters(tl, h, o = {}) {
+  const { stagger = STAGGER, dur = 560, rise = 12, spread = 0.028, tighten = 1100 } = o;
+  tl.show(h);
+  if (tl.ff) return;
+  if (REDUCED) { tl.anim(h, [{ opacity: 0 }, { opacity: 1 }], { duration: 450, easing: 'ease-out', fill: 'backwards' }); await tl.wait(300); return; }
+  const fs = parseFloat(getComputedStyle(h).fontSize), d = spread * fs;
+  let n = 0;
+  h._lines.forEach(line => line.forEach(c => {
+    tl.anim(c.inner, [{ opacity: 0, transform: `translate3d(0,${rise}px,0)` }, { opacity: 1, transform: 'none' }],
+      { duration: dur, delay: n++ * stagger, easing: E_OUT, fill: 'backwards' });
+  }));
+  const at = (n - 1) * stagger + dur * 0.55;
+  h._lines.forEach(line => line.forEach(c => {
+    if (c.k) tl.anim(c.el, [{ transform: `translate3d(${(c.k * d).toFixed(2)}px,0,0)` }, { transform: 'none' }],
+      { duration: tighten, delay: at, easing: E_IO, fill: 'backwards' });
+  }));
+  await tl.wait((n - 1) * stagger + dur * 0.5);
+}
+// Sentence: words fade and rise.
+async function words(tl, el, o = {}) {
+  const { stagger = 70, dur = 700 } = o;
+  tl.show(el);
+  if (tl.ff) return;
+  if (REDUCED) { tl.anim(el, [{ opacity: 0 }, { opacity: 1 }], { duration: 450, fill: 'backwards' }); await tl.wait(300); return; }
+  el._words.forEach((w, i) => tl.anim(w, [{ opacity: 0, transform: 'translate3d(0,12px,0)' }, { opacity: 1, transform: 'none' }],
+    { duration: dur, delay: i * stagger, easing: E_OUT, fill: 'backwards' }));
+  await tl.wait(el._words.length * stagger + dur * 0.5);
+}
+// Terminal typing.
+async function type(tl, el, o = {}) {
+  const step = o.step || 26;
+  tl.show(el);
+  const cs = el._chars || [];
+  const clear = () => cs.forEach(c => { c.className = 'tc'; });
+  if (tl.ff || REDUCED) { clear(); return; }
+  cs.forEach(c => { c.className = 'tc hid'; });
+  const off = tl.onFinish(clear);
+  for (let i = 0; i < cs.length; i++) {
+    cs[i].className = 'tc cur';
+    if (i) cs[i - 1].className = 'tc';
+    await tl.wait(step);
+    if (tl.ff) break;
+  }
+  clear(); off();
+}
+// Split-flap board.
+async function flap(tl, el, o = {}) {
+  const STEP = o.step || 80;
+  tl.show(el);
+  if (tl.ff || REDUCED) { el._final(); if (!tl.ff) tl.anim(el, [{ opacity: 0 }, { opacity: 1 }], { duration: 400, fill: 'backwards' }); return; }
+  const rnd = mulberry32(1971);
+  const cells = el._cells;
+  const plan = cells.map((c, i) => c.target === ' ' ? 0 : (/[A-Z0-9]/.test(c.target) ? 3 + i + Math.floor(rnd() * 3) : 2 + i));
+  const off = tl.onFinish(() => el._final());
+  const flip = (c, ch) => {
+    const old = c.cur; c.cur = ch;
+    const g = ch === ' ' ? '' : ch, og = old === ' ' ? '' : old;
+    c.t.textContent = g; c.fb.textContent = g; c.ft.textContent = og; c.b.textContent = og;
+    c.ftH.style.visibility = c.fbH.style.visibility = 'visible';
+    const half = STEP / 2;
+    c.ftH.animate([{ transform: 'rotateX(0deg)' }, { transform: 'rotateX(-90deg)' }], { duration: half, easing: 'ease-in', fill: 'forwards' });
+    c.fbH.animate([{ transform: 'rotateX(90deg)' }, { transform: 'rotateX(0deg)' }], { duration: half, delay: half, easing: 'ease-out', fill: 'both' });
+  };
+  const maxS = Math.max(...plan);
+  for (let s = 1; s <= maxS; s++) {
+    cells.forEach((c, i) => {
+      if (s > plan[i]) return;
+      const pool = /[0-9]/.test(c.target) ? FLAP_09 : FLAP_AZ;
+      flip(c, s === plan[i] ? c.target : pool[Math.floor(rnd() * pool.length)]);
+    });
+    await tl.wait(STEP);
+    if (tl.ff) break;
+  }
+  await tl.wait(STEP);
+  el._final(); off();
+}
+// Warm light in the photo brightens (cross-fade to the 'lit' version of the photo).
+function glow(tl, sl, to, dur) {
+  if (!sl.glow) return;
+  if (tl.rec && tl.rec.glow === undefined) tl.rec.glow = sl.glowLevel;
+  const from = sl.glowLevel;
+  sl.glowLevel = to;
+  sl.glow.getAnimations().forEach(a => a.cancel());
+  sl.glow.style.opacity = to;
+  if (tl.ff) { syncLit(sl); return; }
+  litVisible(sl);
+  const a = tl.anim(sl.glow, [{ opacity: from }, { opacity: to }], { duration: dur, easing: 'cubic-bezier(0.45, 0, 0.25, 1)' });
+  a.finished.then(() => syncLit(sl), () => syncLit(sl));
+}
+// Only draw what is visible: hide 'lit' at level 0, hide 'sharp' under a fully lit layer.
+function litVisible(sl) { if (sl.glow) { sl.glow.style.visibility = 'visible'; sl.sharp.style.visibility = 'visible'; } }
+function syncLit(sl) {
+  if (!sl.glow || sl.glow.getAnimations().length) return;
+  sl.glow.style.visibility = sl.glowLevel > 0 ? 'visible' : 'hidden';
+  sl.sharp.style.visibility = sl.glowLevel >= 1 ? 'hidden' : 'visible';
+}
+// GOLD is struck through, an arrow draws, LIFE appears in orange.
+async function swap(tl, sl, el) {
+  tl.show(el);
+  const from = $('.from', el), strike = $('.strike', el), shaft = $('.shaft', el), head = $('.head', el), to = $('.to', el);
+  if (tl.ff || REDUCED) {
+    [from, strike, shaft, head, to].forEach(x => x.classList.add('on')); from.classList.add('dim');
+    glow(tl, sl, 1, 1400);
+    if (!tl.ff) tl.anim(el, [{ opacity: 0 }, { opacity: 1 }], { duration: 450, fill: 'backwards' });
+    return;
+  }
+  from.classList.add('on');
+  tl.anim(from, [{ opacity: 0, transform: 'translate3d(0,12px,0)' }, { opacity: 1, transform: 'none' }], { duration: 600, easing: E_OUT, fill: 'backwards' });
+  await tl.wait(700);
+  strike.classList.add('on');
+  tl.anim(strike, [{ transform: 'scaleX(0)' }, { transform: 'none' }], { duration: 460, easing: E_IO, fill: 'backwards' });
+  await tl.wait(480);
+  from.classList.add('dim');
+  tl.anim(from, [{ opacity: 1 }, { opacity: 0.5 }], { duration: 520, easing: 'ease-out' });
+  shaft.classList.add('on');
+  tl.anim(shaft, [{ transform: 'scaleX(0)' }, { transform: 'none' }], { duration: 560, easing: E_IO, fill: 'backwards' });
+  head.classList.add('on');
+  tl.anim(head, [{ opacity: 0, transform: 'translate3d(-10px,0,0)' }, { opacity: 1, transform: 'none' }], { duration: 320, delay: 420, easing: E_OUT, fill: 'backwards' });
+  await tl.wait(560);
+  glow(tl, sl, 1, 1900);
+  await letters(tl, to, { stagger: 55, spread: 0.02, tighten: 900 });
+}
+
+/* ============================================================
+   CHOREOGRAPHY — beat 0 plays on arrival, then one beat per click
+   ============================================================ */
+const CHOREO = {
+  s1: [
+    async (tl, sl) => {
+      glow(tl, sl, 1, 6500);                         // the entrance light slowly brightens
+      await letters(tl, $('.hl', sl.el));
+      await tl.wait(160);
+      await type(tl, $('.byline', sl.el));
+    },
+    async (tl, sl) => { await words(tl, $('.sub', sl.el)); },
+  ],
+  s3: [
+    async (tl, sl) => {
+      await letters(tl, $('.hl', sl.el));
+      await tl.wait(120);
+      await flap(tl, $('.flap', sl.el));
+    },
+    async (tl, sl) => { await swap(tl, sl, $('.swap', sl.el)); },
+  ],
+};
+
+/* ============================================================
+   SLIDES
+   ============================================================ */
+const stage = $('#stage');
+const ui = $('#ui'), frameEl = $('#ui .frame'), uiCode = $('#ui-code'), uiNum = $('#ui-num'), uiTitle = $('#ui-title');
+const balK = $('#bal .k'), balV = $('#bal .v'), balDelta = $('#bal-delta');
+const fogEl = $('#fog'), standby = $('#standby'), sbMsg = $('#sb-msg'), blackEl = $('#black'), live = $('#live');
+
+const slides = $$('.slide').map((el, i) => {
+  const [fx, fy] = (el.dataset.focus || '0.5 0.5').split(' ').map(Number);
+  const s = {
+    i, el, id: el.id,
+    scene: $('.scene', el), cam: $('.cam', el), blur: $('.cam .blur', el), glow: $('.cam .lit', el), sharp: $('.cam .sharp', el),
+    shade: $('.shade', el), txt: $('.txt', el),
+    code: el.dataset.code || '', num: el.dataset.num || pad(i + 1, 2), title: el.dataset.title || '',
+    bal: parseBal(el.dataset.bal), fog: +(el.dataset.fog || 0.14), moveDur: +(el.dataset.move || MOVE_MS),
+    glowBase: +(el.dataset.glowBase || 0), glowLevel: 0,
+    fx: fx * W, fy: fy * H, beat: 0, exitBeat: 0, rec: [],
+    beats: CHOREO[el.id] || [async () => {}],
+    notes: $$('.notes p', el).map(p => p.textContent.trim()),
+    pose: { s: 1, x: 0, y: 0 }, rest: { s0: 1, x0: 0, y0: 0, t0: 0 },
+  };
+  // drift: the camera slowly recentres on the focus point while it pushes in
+  s.drift = { x: (W / 2 - s.fx) * 0.22, y: (H / 2 - s.fy) * 0.22 };
+  if (s.cam) s.cam.style.transformOrigin = `${s.fx + PADX}px ${s.fy + PADY}px`;
+  // smallest start scale that still covers the frame when the scene arrives
+  const X = s.fx - s.drift.x * 0.5, Y = s.fy - s.drift.y * 0.5;
+  const need = Math.max(X / (PADX + s.fx), (W - X) / (W + PADX - s.fx), Y / (PADY + s.fy), (H - Y) / (H + PADY - s.fy));
+  s.startScale = Math.max(0.8, need + 0.015);
+  return s;
+});
+
+function setPose(sl, p) {
+  sl.pose = p;
+  if (sl.cam) sl.cam.style.transform = `translate3d(${p.x.toFixed(2)}px,${p.y.toFixed(2)}px,0) scale(${p.s.toFixed(5)})`;
+}
+function restPose(sl, now) {
+  const r = sl.rest;
+  if (REDUCED) return { s: r.s0, x: r.x0, y: r.y0 };
+  const k = 1 - Math.exp(-(now - r.t0) / IDLE_TAU);
+  return { s: r.s0 * (1 + IDLE_PUSH * k), x: r.x0 + sl.drift.x * 0.12 * k, y: r.y0 + sl.drift.y * 0.12 * k };
+}
+
+/* ============================================================
+   LIFE BALANCE COUNTER
+   ============================================================ */
+const counter = {
+  value: 0, shown: '', ticking: false, base: 0, t0: 0,
+  set(v) { this.value = v; this.ticking = false; this.render(); },
+  resume() { this.base = Math.floor(this.value); this.t0 = performance.now(); this.ticking = this.base > 0; },
+  frame(now) { if (!this.ticking) return; this.value = Math.max(0, this.base - Math.floor((now - this.t0) / 1000)); this.render(); },
+  render() { const str = fmtBal(this.value); if (str !== this.shown) { balV.textContent = str; this.shown = str; } },
+};
+let deltaTimer = 0;
+function showDelta(v, dir) {
+  if (!counter.armed || Math.abs(v) < 86400) return;
+  balDelta.textContent = (dir > 0 ? '− ' : '+ ') + fmtDelta(v);
+  clearTimeout(deltaTimer);
+  balDelta.getAnimations().forEach(a => a.cancel());
+  balDelta.style.opacity = 1;
+  balDelta.animate([{ opacity: 0, transform: 'translate3d(0,-6px,0)' }, { opacity: 1, transform: 'none' }], { duration: 300, easing: E_OUT });
+  deltaTimer = setTimeout(() => {
+    balDelta.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 600 }).finished.then(() => { balDelta.style.opacity = 0; }, () => {});
+  }, 2600);
+}
+
+/* ============================================================
+   CAMERA — one continuous move between scenes (rAF, transforms + opacity only)
+   ============================================================ */
+const C = { rest: null, mv: null };
+function camMove(from, to, dir, opt = {}) {
+  return new Promise(resolve => {
+    const now = performance.now();
+    const front = dir > 0 ? to : from, back = dir > 0 ? from : to;
+    const cur = from ? from.pose : null;
+    const m = {
+      front, back, dir: opt.dir0 || dir, resolve, last: now, turnAt: opt.turnAt, counter: opt.counter !== false,
+      p: opt.p0 !== undefined ? opt.p0 : (dir > 0 ? 0 : 1),
+      dur: opt.dur || (front ? front.moveDur : MOVE_MS),
+      b0: back ? (dir > 0 && cur ? { ...cur } : { s: 1, x: 0, y: 0 }) : null,
+      f1: front ? (dir < 0 && cur ? { ...cur } : { s: 1, x: 0, y: 0 }) : null,
+    };
+    if (opt.f1) m.f1 = opt.f1;
+    if (REDUCED) m.dur = 700;
+    m.vFrom = counter.value;
+    m.vTo = to ? to.bal : counter.value;
+    m.vBack = dir > 0 ? m.vFrom : m.vTo;
+    m.vFront = dir > 0 ? m.vTo : m.vFrom;
+    if (front) { front.scene.classList.add('front'); }
+    if (back) { back.scene.classList.remove('front'); back.scene.style.opacity = 1; }
+    if (m.counter) { counter.ticking = false; showDelta(m.vTo - m.vFrom, m.vTo < m.vFrom ? 1 : -1); }
+    C.rest = null; C.mv = m;
+    applyMove(m);
+  });
+}
+function applyMove(m) {
+  const p = m.p, e = E_CAM(p);
+  const bump = REDUCED ? 0 : Math.sin(Math.PI * p);
+  const blur = REDUCED ? 0 : Math.pow(clamp(slopeAt(p) / SLOPE_MAX), 1.6) * 0.92;
+  if (m.back) {
+    const b = m.back, b0 = m.b0;
+    setPose(b, REDUCED ? b0 : { s: b0.s * Math.pow(PUSH_MAX, e), x: b0.x + b.drift.x * e, y: b0.y + b.drift.y * e });
+    b.scene.style.opacity = 1;
+    if (b.blur) b.blur.style.opacity = blur.toFixed(3);
+  }
+  if (m.front) {
+    const f = m.front, f1 = m.f1, s0 = Math.min(f.startScale, f1.s);
+    setPose(f, REDUCED ? f1 : { s: s0 * Math.pow(f1.s / s0, e), x: f1.x - f.drift.x * 0.5 * (1 - e), y: f1.y - f.drift.y * 0.5 * (1 - e) });
+    f.scene.style.opacity = (REDUCED ? p : smooth(0.28, 0.72, p)).toFixed(3);
+    if (f.blur) f.blur.style.opacity = blur.toFixed(3);
+  }
+  // parallax: the micro-UI moves less than the image
+  ui.style.transform = bump ? `translate3d(0,${(-5 * bump).toFixed(2)}px,0) scale(${(1 + 0.014 * bump).toFixed(4)})` : '';
+  const fogA = m.back ? m.back.fog : 0, fogB = m.front ? m.front.fog : 0;
+  fogEl.style.opacity = (lerp(fogA, fogB, smooth(0.25, 0.75, p)) + 0.14 * bump).toFixed(3);
+  if (m.counter) { counter.value = lerp(m.vBack, m.vFront, e); counter.render(); }
+}
+function endMove(m, now) {
+  C.mv = null;
+  const atFront = m.p >= 1;
+  const restS = atFront ? m.front : m.back, gone = atFront ? m.back : m.front;
+  if (gone) { gone.scene.style.opacity = 0; if (gone.blur) gone.blur.style.opacity = 0; gone.el.classList.remove('live'); gone.scene.classList.remove('front'); }
+  ui.style.transform = '';
+  if (restS) {
+    restS.scene.style.opacity = 1; if (restS.blur) restS.blur.style.opacity = 0;
+    const pose = atFront ? m.f1 : m.b0;
+    restS.rest = { s0: pose.s, x0: pose.x, y0: pose.y, t0: now };
+    setPose(restS, pose);
+    fogEl.style.opacity = restS.fog;
+    C.rest = restS;
+  }
+  if (m.counter || counter.armed) counter.resume();
+  m.resolve(restS);
+}
+function frame(now) {
+  const m = C.mv;
+  if (m) {
+    const dt = Math.min(100, now - m.last); m.last = now;
+    m.p = clamp(m.p + m.dir * dt / m.dur);
+    if (m.turnAt !== undefined && m.dir < 0 && m.p <= m.turnAt) { m.dir = 1; m.turnAt = undefined; }
+    applyMove(m);
+    if ((m.dir > 0 && m.p >= 1) || (m.dir < 0 && m.p <= 0)) endMove(m, now);
+  } else if (C.rest) {
+    setPose(C.rest, restPose(C.rest, now));
+  }
+  if (counter.armed) counter.frame(now);
+  requestAnimationFrame(frame);
+}
+
+/* ============================================================
+   MICRO-UI BUILD (comes in last)
+   ============================================================ */
+let uiFirst = true;
+async function buildUI(tl, sl) {
+  setType(uiCode, sl.code);
+  setType(uiNum, `${sl.num} / ${pad(TOTAL, 2)}`);
+  frameEl.classList.add('on');
+  const rules = $$('.rule', frameEl), crosses = $$('.cross', frameEl);
+  if (!tl.ff && !REDUCED) {
+    rules.forEach((r, i) => tl.anim(r, [{ transform: 'scaleX(0)' }, { transform: 'none' }], { duration: 1000, delay: i * 120, easing: E_IO, fill: 'backwards' }));
+    crosses.forEach((c, i) => tl.anim(c, [{ opacity: 0, transform: 'scale(.35)' }, { opacity: 1, transform: 'none' }], { duration: 600, delay: 150 + i * 70, easing: E_OUT, fill: 'backwards' }));
+  } else if (!tl.ff) {
+    tl.anim(frameEl, [{ opacity: 0 }, { opacity: 1 }], { duration: 400, fill: 'backwards' });
+  }
+  const jobs = [type(tl, uiCode), type(tl, uiNum)];
+  if (uiFirst) {
+    uiFirst = false;
+    setType(balK, 'Life balance'); setType(uiTitle, DECK_TITLE);
+    counter.set(sl.bal);
+    jobs.push(type(tl, uiTitle));
+    jobs.push(type(tl, balK).then(() => {
+      balV.classList.add('on');
+      if (!tl.ff) balV.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 300 });
+      counter.armed = true; counter.resume();      // LIFE BALANCE starts ticking now
+    }));
+  }
+  await Promise.all(jobs);
+}
+function hideUI() { frameEl.classList.remove('on'); uiCode.textContent = ''; uiNum.textContent = ''; }
+
+/* ============================================================
+   BEATS
+   ============================================================ */
+const S = { i: -1, busy: false, build: null, tl: null, started: false };
+
+async function beatBody(sl, b, tl) {
+  tl.rec = sl.rec[b] = { els: [], glow: undefined };
+  if (b === 0) {
+    if (sl.shade) { sl.shade.classList.add('on'); if (!tl.ff) tl.anim(sl.shade, [{ opacity: 0 }, { opacity: 1 }], { duration: 900, easing: 'ease-out', fill: 'backwards' }); }
+    await tl.wait(REDUCED ? 80 : 400);              // headline only after the camera settles
+  }
+  await sl.beats[b](tl, sl);
+  if (b === 0) await buildUI(tl, sl);
+}
+function runBeat(sl, b) {
+  const tl = new TL();
+  S.tl = tl;
+  const p = beatBody(sl, b, tl).catch(err => console.error(err));
+  S.build = p;
+  p.then(() => { if (S.build === p) S.build = null; });
+  updateNotes();
+  return p;
+}
+function resetEl(el) {
+  el.getAnimations({ subtree: true }).forEach(a => a.cancel());
+  el.classList.remove('on', 'dim');
+  $$('.on, .dim', el).forEach(x => x.classList.remove('on', 'dim'));
+  if (el._reset) el._reset();
+}
+function resetText(sl) {
+  $$('[data-b]', sl.el).forEach(resetEl);
+  if (sl.shade) { sl.shade.getAnimations().forEach(a => a.cancel()); sl.shade.classList.remove('on'); }
+  if (sl.glow) { sl.glow.getAnimations().forEach(a => a.cancel()); sl.glowLevel = sl.glowBase; sl.glow.style.opacity = sl.glowBase; syncLit(sl); }
+  sl.rec = [];
+}
+async function undoBeat(sl, b) {
+  const r = sl.rec[b]; if (!r) return;
+  const anims = r.els.map(el => el.animate([{ opacity: getComputedStyle(el).opacity }, { opacity: 0 }], { duration: 240, easing: 'ease-in', fill: 'forwards' }));
+  if (r.glow !== undefined && sl.glow) {
+    const from = sl.glowLevel; sl.glowLevel = r.glow;
+    sl.glow.getAnimations().forEach(a => a.cancel());
+    sl.glow.style.opacity = r.glow;
+    litVisible(sl);
+    sl.glow.animate([{ opacity: from }, { opacity: r.glow }], { duration: 600, easing: 'ease-out' }).finished.then(() => syncLit(sl), () => {});
+  }
+  await Promise.all(anims.map(a => a.finished));
+  r.els.forEach(resetEl);
+  sl.rec[b] = null;
+}
+async function exitText(sl) {
+  const els = [sl.txt, sl.shade, frameEl, uiCode, uiNum].filter(Boolean);
+  const anims = els.map(el => el.animate([{ opacity: getComputedStyle(el).opacity }, { opacity: 0 }], { duration: REDUCED ? 150 : 200, easing: 'ease-in', fill: 'forwards' }));
+  await Promise.all(anims.map(a => a.finished));
+  resetText(sl); hideUI();
+  anims.forEach(a => a.cancel());
+}
+async function restore(sl, beat) {
+  resetText(sl);
+  const tl = new TL(true);
+  sl.beat = beat;
+  for (let b = 0; b <= beat; b++) await beatBody(sl, b, tl);
+  [sl.txt, sl.shade, frameEl, uiCode, uiNum].filter(Boolean).forEach(el =>
+    el.animate([{ opacity: 0 }, { opacity: getComputedStyle(el).opacity }], { duration: 450, easing: 'ease-out' }));
+  updateNotes();
+}
+
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+async function finishBuild() { if (S.build) { S.tl.finish(); await S.build; S.build = null; } }
+
+async function go(to, dir) {
+  const A = slides[S.i] || null, B = slides[to];
+  if (A) { A.exitBeat = A.beat; await exitText(A); }
+  B.el.classList.add('live');
+  resetText(B);
+  B.scene.style.opacity = 0.001;                    // let the GPU upload the scene before it is seen
+  if (!A) standby.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 500, easing: 'ease-out', fill: 'forwards' }).finished.then(() => { standby.style.display = 'none'; }, () => {});
+  announce(B);
+  const restS = await camMove(A, B, dir);
+  S.i = restS.i;
+  if (restS === B) {
+    if (dir > 0) { B.beat = 0; runBeat(B, 0); }
+    else await restore(B, B.beats.length - 1);
+  } else {
+    await restore(restS, restS.exitBeat);           // the move was reversed half-way
+  }
+  updateNotes();
+}
+
+async function step(dir) {
+  S.busy = true;
+  try {
+    const sl = slides[S.i];
+    if (dir > 0) {
+      await finishBuild();
+      if (sl && sl.beat < sl.beats.length - 1) { sl.beat++; runBeat(sl, sl.beat); }
+      else if (S.i < slides.length - 1) await go(S.i + 1, +1);
+    } else {
+      await finishBuild();
+      if (sl && sl.beat > 0) { await undoBeat(sl, sl.beat); sl.beat--; updateNotes(); }
+      else if (S.i > 0) await go(S.i - 1, -1);
+    }
+  } catch (err) { console.error(err); }
+  S.busy = false;
+}
+
+function next() {
+  if (!S.ready) return;
+  if (C.mv) { if (C.mv.dir < 0 && C.mv.turnAt === undefined && C.mv.back) C.mv.dir = 1; return; }
+  if (S.busy) return;
+  step(+1);
+}
+function prev() {
+  if (!S.ready) return;
+  if (C.mv) { if (C.mv.dir > 0 && C.mv.back && C.mv.turnAt === undefined) C.mv.dir = -1; return; }
+  if (S.busy) return;
+  step(-1);
+}
+async function replay() {
+  if (!S.ready || C.mv || S.busy || S.i < 0) return;
+  S.busy = true;
+  try {
+    await finishBuild();
+    const sl = slides[S.i];
+    await exitText(sl);
+    // the camera breathes back and settles again, then the build replays
+    await camMove(null, sl, +1, { p0: 1, dir0: -1, turnAt: 0.5, counter: false, f1: { ...sl.pose }, dur: sl.moveDur });
+    sl.beat = 0;
+    runBeat(sl, 0);
+  } catch (err) { console.error(err); }
+  S.busy = false;
+}
+
+function announce(sl) { live.textContent = `Slide ${+sl.num} of ${TOTAL}. ${sl.el.querySelector('.hl')?.getAttribute('aria-label') || sl.title}`; }
+
+/* ============================================================
+   SPEAKER NOTES WINDOW (press N)
+   ============================================================ */
+let notesWin = null, tStart = 0;
+function openNotes() {
+  if (notesWin && !notesWin.closed) { notesWin.focus(); return; }
+  notesWin = window.open('', 'whatif-notes', 'width=1000,height=680');
+  if (!notesWin) return;
+  const fontCSS = $('#font-css').textContent;
+  notesWin.document.open();
+  notesWin.document.write(`<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Speaker notes — What if</title><style>${fontCSS}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#0E0F11;color:#EDEEEF;height:100vh;display:grid;grid-template-rows:auto auto 1fr auto;font-family:'IBM Plex Mono',monospace}
+  header,footer{display:flex;justify-content:space-between;gap:24px;padding:18px 32px;font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:rgba(237,238,239,.6)}
+  header{border-bottom:1px solid rgba(237,238,239,.14)} footer{border-top:1px solid rgba(237,238,239,.14)}
+  h1{padding:26px 32px 4px;font:300 46px/1 'Barlow Condensed',sans-serif;letter-spacing:.05em;text-transform:uppercase}
+  #n{padding:18px 32px;overflow:auto}
+  #n p{font:400 34px/1.38 'Barlow Condensed',sans-serif;letter-spacing:.01em;margin-bottom:.55em;max-width:34em}
+  b{color:#EDEEEF;font-weight:500}</style></head><body>
+  <header><span id="pos"></span><span id="beat"></span><span id="clock"></span></header>
+  <h1 id="t"></h1><div id="n"></div>
+  <footer><span id="next"></span><span>→ next · ← back · R replay</span></footer></body></html>`);
+  notesWin.document.close();
+  notesWin.addEventListener('keydown', onKey);
+  updateNotes();
+}
+function updateNotes() {
+  if (!notesWin || notesWin.closed) return;
+  const d = notesWin.document, sl = slides[S.i];
+  const nx = slides[S.i + 1];
+  d.getElementById('pos').textContent = sl ? `Slide ${sl.num} / ${pad(TOTAL, 2)}` : 'Standby';
+  d.getElementById('beat').textContent = sl ? `Beat ${sl.beat + 1} / ${sl.beats.length}` : '';
+  d.getElementById('t').textContent = sl ? sl.title : 'Press → to begin';
+  d.getElementById('n').innerHTML = sl ? sl.notes.map(t => `<p>${t.replace(/&/g, '&amp;').replace(/</g, '&lt;')}</p>`).join('') : '';
+  d.getElementById('next').textContent = nx ? `Next slide: ${nx.num} — ${nx.title}` : 'Last slide';
+}
+setInterval(() => {
+  if (!notesWin || notesWin.closed) return;
+  const s = tStart ? Math.floor((performance.now() - tStart) / 1000) : 0;
+  notesWin.document.getElementById('clock').textContent = `Elapsed ${pad(Math.floor(s / 60), 2)}:${pad(s % 60, 2)}`;
+}, 500);
+
+/* ============================================================
+   INPUT
+   ============================================================ */
+function toggleFS() {
+  const d = document, el = d.documentElement;
+  if (d.fullscreenElement || d.webkitFullscreenElement) (d.exitFullscreen || d.webkitExitFullscreen).call(d);
+  else (el.requestFullscreen || el.webkitRequestFullscreen).call(el);
+}
+let blacked = false;
+function blackout() { blacked = !blacked; blackEl.animate([{ opacity: blacked ? 0 : 1 }, { opacity: blacked ? 1 : 0 }], { duration: 300, fill: 'forwards' }); }
+function begin() { if (!S.started) { S.started = true; tStart = performance.now(); } }
+function onKey(e) {
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  const k = e.key;
+  const fwd = ['ArrowRight', 'PageDown', ' ', 'Spacebar', 'Enter', 'ArrowDown'].includes(k);
+  const back = ['ArrowLeft', 'PageUp', 'ArrowUp', 'Backspace'].includes(k);
+  if (fwd || back) e.preventDefault();
+  if (e.repeat) return;
+  if (fwd) { begin(); next(); }
+  else if (back) prev();
+  else if (k === 'r' || k === 'R') replay();
+  else if (k === 'f' || k === 'F') toggleFS();
+  else if (k === 'n' || k === 'N') openNotes();
+  else if (k === 'b' || k === 'B' || k === '.') blackout();
+}
+addEventListener('keydown', onKey);
+addEventListener('pointerup', e => {
+  if (e.button !== 0) return;
+  if (e.pointerType === 'touch' && e.clientX < innerWidth / 3) prev(); else { begin(); next(); }
+});
+addEventListener('contextmenu', e => { e.preventDefault(); prev(); });
+let idleT = 0;
+addEventListener('pointermove', () => { document.body.classList.remove('idle'); clearTimeout(idleT); idleT = setTimeout(() => document.body.classList.add('idle'), 2200); });
+
+function fit() {
+  if (document.body.classList.contains('print')) { stage.style.transform = ''; return; }
+  const k = Math.min(innerWidth / W, innerHeight / H);
+  stage.style.transform = `scale(${k})`;
+}
+addEventListener('resize', fit);
+
+/* ============================================================
+   ATMOSPHERE — fog and grain are generated here (no extra files)
+   ============================================================ */
+function fogTexture(w, h, seed, gx, gy, lo, hi, fadeTop, fadeBottom) {
+  const rnd = mulberry32(seed), oct = 5, lat = [];
+  for (let o = 0; o < oct; o++) { const X = gx << o, Y = gy << o, a = new Float32Array(X * Y); for (let i = 0; i < a.length; i++) a[i] = rnd(); lat.push({ X, Y, a }); }
+  const c = document.createElement('canvas'); c.width = w; c.height = h;
+  const ctx = c.getContext('2d'), img = ctx.createImageData(w, h), D = img.data;
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    let v = 0, amp = 1, nrm = 0;
+    for (let o = 0; o < oct; o++) {
+      const L = lat[o], fx = x / w * L.X, fy = y / h * L.Y, x0 = fx | 0, y0 = fy | 0, tx = fx - x0, ty = fy - y0;
+      const x1 = (x0 + 1) % L.X, y1 = (y0 + 1) % L.Y, sx = tx * tx * (3 - 2 * tx), sy = ty * ty * (3 - 2 * ty), A = L.a;
+      v += amp * ((A[y0 * L.X + x0] * (1 - sx) + A[y0 * L.X + x1] * sx) * (1 - sy) + (A[y1 * L.X + x0] * (1 - sx) + A[y1 * L.X + x1] * sx) * sy);
+      nrm += amp; amp *= 0.5;
+    }
+    const a = smooth(lo, hi, v / nrm) * smooth(0, fadeTop, y / h) * (1 - smooth(1 - fadeBottom, 1, y / h)), i = (y * w + x) * 4;
+    D[i] = 214; D[i + 1] = 218; D[i + 2] = 222; D[i + 3] = a * 235;
+  }
+  ctx.putImageData(img, 0, 0);
+  return c.toDataURL('image/png');
+}
+function grainTexture(n) {
+  const c = document.createElement('canvas'); c.width = c.height = n;
+  const ctx = c.getContext('2d'), img = ctx.createImageData(n, n), D = img.data, rnd = mulberry32(42);
+  for (let i = 0; i < n * n; i++) { const v = rnd() > 0.5 ? 255 : 0; D[i * 4] = D[i * 4 + 1] = D[i * 4 + 2] = v; D[i * 4 + 3] = rnd() * 16; }
+  ctx.putImageData(img, 0, 0);
+  return c.toDataURL('image/png');
+}
+let fogAnims = [];
+function startFog() {
+  fogAnims.forEach(a => a.cancel()); fogAnims = [];
+  if (REDUCED) return;
+  fogAnims.push($('#fog .fa').animate([{ transform: 'translate3d(0,0,0)' }, { transform: 'translate3d(-1920px,0,0)' }], { duration: 150000, iterations: Infinity }));
+  fogAnims.push($('#fog .fb').animate([{ transform: 'translate3d(0,0,0)' }, { transform: 'translate3d(-2400px,0,0)' }], { duration: 95000, iterations: Infinity }));
+}
+
+/* ============================================================
+   PRINT / PDF — final state of every slide
+   ============================================================ */
+function buildPrintUI() {
+  slides.forEach(sl => {
+    const d = document.createElement('div'); d.className = 'pui'; d.setAttribute('aria-hidden', 'true');
+    d.innerHTML = `<i class="rule t"></i><i class="rule b"></i><i class="cross c1"></i><i class="cross c2"></i><i class="cross c3"></i><i class="cross c4"></i>
+      <div class="lbl tl"></div><div class="lbl tr"><span class="k">Life balance</span><span class="v"></span></div>
+      <div class="lbl bl"></div><div class="lbl br"></div>`;
+    $('.tl', d).textContent = sl.code; $('.tr .v', d).textContent = fmtBal(sl.bal);
+    $('.bl', d).textContent = DECK_TITLE; $('.br', d).textContent = `${sl.num} / ${pad(TOTAL, 2)}`;
+    sl.el.appendChild(d);
+  });
+}
+function enterPrint() {
+  if (document.body.classList.contains('print')) return;
+  document.body.classList.add('print'); fit();
+  slides.forEach(sl => {
+    resetText(sl);
+    const tl = new TL(true);
+    sl.beat = sl.beats.length - 1;
+    (async () => { for (let b = 0; b < sl.beats.length; b++) await beatBody(sl, b, tl); })();
+  });
+}
+addEventListener('beforeprint', enterPrint);
+addEventListener('afterprint', () => { if (location.hash !== '#print') location.reload(); });
+
+/* ============================================================
+   BOOT — preload everything, then wait on the standby screen
+   ============================================================ */
+async function boot() {
+  fit();
+  const fonts = ['300 148px "Barlow Condensed"', '400 40px "Barlow Condensed"', '200 40px "Barlow Condensed"', '400 20px "IBM Plex Mono"', '500 60px "IBM Plex Mono"'];
+  await Promise.all(fonts.map(f => document.fonts.load(f).catch(() => {})));
+  const imgs = $$('.cam img');
+  let n = 0;
+  const scenesN = slides.filter(s => s.cam).length;
+  const msg = () => { sbMsg.textContent = `Loading scenes ${Math.min(scenesN, Math.round(n / imgs.length * scenesN))} / ${scenesN}`; };
+  msg();
+  await Promise.all(imgs.map(img => (img.decode ? img.decode() : Promise.resolve()).catch(() => {}).then(() => { n++; msg(); })));
+
+  $$('.hl').forEach(splitLetters);
+  $$('.swap .to').forEach(splitLetters);
+  $$('.sub').forEach(splitWords);
+  $$('.mlabel').forEach(el => { el.setAttribute('aria-label', el.textContent); setType(el, el.textContent); });
+  $$('.flap').forEach(buildFlap);
+  buildPrintUI();
+
+  $('#fog .fa').style.backgroundImage = `url(${fogTexture(640, 270, 7, 5, 2, 0.42, 0.92, 0.3, 0.2)})`;
+  $('#fog .fb').style.backgroundImage = `url(${fogTexture(800, 220, 19, 6, 2, 0.45, 0.95, 0.45, 0.15)})`;
+  $('#grain').style.backgroundImage = `url(${grainTexture(220)})`;
+  startFog();
+  requestAnimationFrame(frame);
+
+  S.ready = true;
+  sbMsg.textContent = 'Press → or click to begin';
+  window.__deck = { slides, S, C, next, prev, replay, go: (i) => go(i, i > S.i ? 1 : -1), enterPrint, finishBuild };
+
+  const h = location.hash;
+  if (h === '#print') enterPrint();
+  else if (/^#\d+$/.test(h)) {                      // e.g. #3 opens the 3rd scene in its final state (rehearsal)
+    const idx = slides.findIndex(s => +s.num === +h.slice(1));
+    if (idx >= 0) {
+      standby.style.display = 'none';
+      const sl = slides[idx]; sl.el.classList.add('live'); sl.scene.style.opacity = 1;
+      setPose(sl, { s: 1, x: 0, y: 0 }); sl.rest.t0 = performance.now(); C.rest = sl; S.i = idx;
+      fogEl.style.opacity = sl.fog; uiFirst = false;
+      setType(balK, 'Life balance'); setType(uiTitle, DECK_TITLE); balV.classList.add('on');
+      counter.set(sl.bal); counter.armed = true; counter.resume();
+      await restore(sl, sl.beats.length - 1);
+    }
+  }
+}
+boot();
+})();
+</script>
+</body>
+</html>
